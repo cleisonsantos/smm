@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Clientes -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-bold"><a href="/customers">Clientes</a></h2>
+        <ul>
+            {% for cliente in clientes %}
+            <li class="py-1">{{ cliente.nome }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Fabricantes -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-bold"><a href="/manufacturers">Fabricantes</a></h2>
+        <ul>
+            {% for fabricante in fabricantes %}
+            <li class="py-1">{{ fabricante.nome }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Soluções -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-bold">Soluções</h2>
+        <ul>
+            {% for solucao in solucoes %}
+            <li class="py-1">{{ solucao.nome }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Componentes -->
+    <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-bold">Componentes</h2>
+        <ul>
+            {% for componente in componentes %}
+            <li class="py-1">{{ componente.nome }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
