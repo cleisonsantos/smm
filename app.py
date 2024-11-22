@@ -43,6 +43,30 @@ def manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('manufacturers.html', manufacturers=manufacturers, customers=Customer.query.all())
 
+@app.route('/solutions', methods=['GET', 'POST'])
+def solutions():
+    if request.method == 'POST':
+        # Process the form data and add the solution to the database
+        if 'name' in request.form:
+            solution = Solution(name=request.form['name'], manufacturer_id=request.form['manufacturer_id'])
+            db.session.add(solution)
+            db.session.commit()
+        return redirect(url_for('solutions'))
+    solutions = Solution.query.all()
+    return render_template('solutions.html', solutions=solutions, manufacturers=Manufacturer.query.all())
+
+@app.route('/components', methods=['GET', 'POST'])
+def components():
+    if request.method == 'POST':
+        # Process the form data and add the component to the database
+        if 'name' in request.form:
+            component = Component(name=request.form['name'], solution_id=request.form['solution_id'])
+            db.session.add(component)
+            db.session.commit()
+        return redirect(url_for('components'))
+    components = Component.query.all()
+    return render_template('components.html', components=components, solutions=Solution.query.all())
+
 @app.route('/templates', methods=['GET'])
 def index():
     return render_template('templates.html')
