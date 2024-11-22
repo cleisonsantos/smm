@@ -13,7 +13,11 @@ from models import Customer, Manufacturer, Solution, Component
 
 @app.route('/')
 def home():
-    return render_template('dashboard.html')
+    customers_count = Customer.query.count()
+    manufacturers_count = Manufacturer.query.count()
+    solutions_count = Solution.query.count()
+    components_count = Component.query.count()
+    return render_template('dashboard.html', customers_count=customers_count, manufacturers_count=manufacturers_count, solutions_count=solutions_count, components_count=components_count)
 
 @app.route('/customers', methods=['GET', 'POST'])
 def customers():

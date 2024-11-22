@@ -4,43 +4,27 @@
 {% block content %}
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
     <!-- Clientes -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
         <h2 class="text-lg font-bold"><a href="/customers">Clientes</a></h2>
-        <ul>
-            {% for cliente in clientes %}
-            <li class="py-1">{{ cliente.nome }}</li>
-            {% endfor %}
-        </ul>
+        <span class="text-5xl">{{ customers_count }}</span>
     </div>
 
     <!-- Fabricantes -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
         <h2 class="text-lg font-bold"><a href="/manufacturers">Fabricantes</a></h2>
-        <ul>
-            {% for fabricante in fabricantes %}
-            <li class="py-1">{{ fabricante.nome }}</li>
-            {% endfor %}
-        </ul>
+        <span class="text-5xl">{{ manufacturers_count }}</span>
     </div>
 
     <!-- Soluções -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
         <h2 class="text-lg font-bold">Soluções</h2>
-        <ul>
-            {% for solucao in solucoes %}
-            <li class="py-1">{{ solucao.nome }}</li>
-            {% endfor %}
-        </ul>
+        <span class="text-5xl">{{ solutions_count }}</span>
     </div>
 
     <!-- Componentes -->
-    <div class="bg-white rounded-lg shadow p-4">
+    <div class="bg-white rounded-lg shadow p-4 flex flex-col items-center">
         <h2 class="text-lg font-bold">Componentes</h2>
-        <ul>
-            {% for componente in componentes %}
-            <li class="py-1">{{ componente.nome }}</li>
-            {% endfor %}
-        </ul>
+        <span class="text-5xl">{{ components_count }}</span>
     </div>
 </div>
 {% endblock %}
