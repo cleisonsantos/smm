@@ -49,7 +49,7 @@ Este é um projeto Python que utiliza o Flask e o SQLAlchemy para gerenciar mode
 1. Inicie o servidor Flask:
 
     ```bash
-    flask run
+    flask run --debug
     ```
 
 2. Acesse o projeto no navegador:
