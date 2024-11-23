@@ -66,6 +66,17 @@ def components():
         return redirect(url_for('components'))
     components = Component.query.all()
     return render_template('components.html', components=components, solutions=Solution.query.all())
+@app.route('/components/<int:component_id>', methods=['GET', 'POST'])
+def component_details(component_id):
+    if request.method == 'POST':
+        # Process the form data and update the component in the database
+        if 'name' in request.form:
+            component = Component.query.get_or_404(component_id)
+            component.name = request.form['name']
+            db.session.commit()
+        return redirect(url_for('component_details', component_id=component_id))
+    component = Component.query.get_or_404(component_id)
+    return render_template('component_details.html', component=component)
 
 @app.route('/templates', methods=['GET'])
 def index():

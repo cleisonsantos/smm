@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Detalhes do Componente{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-lg font-bold mb-4">Detalhes do Componente</h2>
+    <form method="POST" action="/components/{{ component.id }}">
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700">Nome do Componente</label>
+            <input type="text" id="name" name="name" value="{{ component.name }}" class="w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salvar</button>
+    </form>
+</div>
+{% endblock %}
