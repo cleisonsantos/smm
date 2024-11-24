@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Cadastro de Clientes{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold">{{ template.name }}</h2>
+    <span class="text-gray-600 text-sm">{{ template.description }}</span>
+    <!-- <form method="POST" action="/templates">
+        <div class="mb-1">
+            <!--<label for="name" class="block text-gray-700">Nome</label>-->
+    <!--<input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2 mb-1"
+                placeholder="Nome do modelo" required>
+            <textarea id="description" name="description" class="w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Descrição do modelo"></textarea>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salvar</button>
+    </form> -->
+</div>
+
+<div class="flex gap-2">
+    <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-64 space-y-6 py-4 px-4 mt-2">
+        <form action="/templates/{{template.id}}/sections" method="POST">
+            <div class="">
+                <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-2 py-1"
+                placeholder="Adicionar seção" required>
+                <!-- <input type="hidden" name="template_id" value=""> -->
+            </div>
+        </form>
+        <ul>
+            <h3 class="text-md font-bold mb-2">Seções:</h3>
+            {% for section in template_sections %}
+            <div class="mb-2">
+                <a href="/sections/{{ section.id }}">
+                    <li class="">{{ section.number }} - {{ section.name }}</li>
+                </a>
+            <hr>
+        </div>
+        {% endfor %}
+    </ul>
+</aside>
+
+<div class="bg-white rounded-lg shadow p-6 mt-2 w-full">
+    <h3 class="text-md font-bold mb-2">Questões:</h3>
+</div>
+</div>
+{% endblock %}

@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
-from models import Customer, Manufacturer, Solution, Component
+from models import Customer, Manufacturer, Solution, Component, Template, TemplateSection, TemplateQuestion
 
 @app.route('/')
 def home():
@@ -78,6 +78,50 @@ def component_details(component_id):
     component = Component.query.get_or_404(component_id)
     return render_template('component_details.html', component=component)
 
-@app.route('/templates', methods=['GET'])
-def index():
-    return render_template('templates.html')
+@app.route('/templates', methods=['GET', 'POST'])
+def templates():
+    if request.method == 'POST':
+        # Process the form data and add the template to the database
+        if 'name' and 'description' in request.form:
+            template = Template(name=request.form['name'], description=request.form['description'])
+            db.session.add(template)
+            db.session.commit()
+        return redirect(url_for('templates'))
+    templates = Template.query.all()
+    return render_template('templates.html', templates=templates)
+
+@app.route('/templates/<int:template_id>', methods=['GET', 'POST'])
+def template_details(template_id):
+    if request.method == 'POST':
+        # Process the form data and update the template in the database
+        if 'name' and 'description' in request.form:
+            template = Template.query.get_or_404(template_id)
+            template.name = request.form['name']
+            template.description = request.form['description']
+            db.session.commit()
+        return redirect(url_for('template_details', template_id=template_id))
+    template = Template.query.get_or_404(template_id)
+    return render_template('template_details.html', template=template, template_sections=TemplateSection.query.filter_by(template_id=template_id).all())
+
+
+@app.route('/templates/<int:template_id>/sections', methods=['POST'])
+def template_sections(template_id):
+    if request.method == 'POST':
+        # Process the form data and add the section to the database
+        if 'name' in request.form:
+            last_section_number = TemplateSection.query.filter_by(template_id=template_id).order_by(TemplateSection.number.desc()).first()
+            if last_section_number:
+                section_number = last_section_number.number + 1
+            else:
+                section_number = 1
+            section = TemplateSection(name=request.form['name'], number=section_number, template_id=template_id)
+            db.session.add(section)
+            db.session.commit()
+        return redirect(url_for('template_details', template_id=template_id))
+    #sections = TemplateSection.query.filter_by(template_id=template_id).all()
+    #return render_template('template_details.html', template=Template.query.get_or_404(template_id), template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), sections=sections)
+
+@app.route('/section_questions/<int:section_id>', methods=['GET'])
+def section_questions(section_id):
+    questions = TemplateQuestion.query.get_or_404(section_id)
+    return render_template('section_questions.html', questions=questions)
