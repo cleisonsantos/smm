@@ -8,4 +8,7 @@
 
 --Template queries:
 --SELECT * FROM template_section;
-SELECT * FROM template t JOIN template_section ts ON t.id = ts.template_id;
+--SELECT * FROM template t JOIN template_section ts ON t.id = ts.template_id;
+
+--Questions queries:
+SELECT * FROM template_section ts JOIN template_question tq ON ts.id = tq.section_id;

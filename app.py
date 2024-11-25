@@ -121,7 +121,26 @@ def template_sections(template_id):
     #sections = TemplateSection.query.filter_by(template_id=template_id).all()
     #return render_template('template_details.html', template=Template.query.get_or_404(template_id), template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), sections=sections)
 
-@app.route('/section_questions/<int:section_id>', methods=['GET'])
+@app.route('/templates/sections/<int:section_id>/questions', methods=['GET'])
 def section_questions(section_id):
-    questions = TemplateQuestion.query.get_or_404(section_id)
-    return render_template('section_questions.html', questions=questions)
+    questions = TemplateQuestion.query.filter_by(section_id=section_id).all()
+    return render_template('section_questions.html', section_id=section_id, template_questions=questions)
+
+@app.route('/sections/<int:section_id>/questions', methods=['POST'])
+def questions(section_id):
+    if request.method == 'POST':
+        # Process the form data and add the question to the database
+        if 'title' and 'response_type' and 'required' in request.form:
+            last_question_number = TemplateQuestion.query.filter_by(section_id=section_id).order_by(TemplateQuestion.number.desc()).first()
+            if last_question_number:
+                question_number = last_question_number.number + 1
+            else:
+                question_number = 1
+            if request.form['required'] == 'on':
+                required = True
+            else:
+                required = False
+            question = TemplateQuestion(title=request.form['title'], number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
+            db.session.add(question)
+            db.session.commit()
+        return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
