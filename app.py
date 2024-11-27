@@ -144,3 +144,10 @@ def questions(section_id):
             db.session.add(question)
             db.session.commit()
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
+    
+@app.route('/questions/<int:question_id>', methods=['DELETE'])
+def delete_question(question_id):
+    question = TemplateQuestion.query.get_or_404(question_id)
+    db.session.delete(question)
+    db.session.commit()
+    return '', 204
