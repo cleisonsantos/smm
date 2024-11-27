@@ -8,13 +8,13 @@
         <div class="mb-4">
             <label for="name" class="block text-gray-700">Nome do Fabricante</label>
             <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2" required>
-            <label for="customer_id">Selecione o Cliente</label>
+            <!-- <label for="customer_id">Selecione o Cliente</label>
             <select id="customer_id" name="customer_id" class="w-full border border-gray-300 rounded px-3 py-2">
                 <option value="">Selecione</option>
                 {% for customer in customers %}
                 <option value="{{ customer.id }}">{{ customer.name }}</option>
                 {% endfor %}
-            </select>
+            </select> -->
         </div>
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salvar</button>
     </form>

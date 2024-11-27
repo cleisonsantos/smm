@@ -35,13 +35,13 @@ def customers():
 def manufacturers():
     if request.method == 'POST':
         # Process the form data and add the manufacturer to the database
-        if 'name' and 'customer_id' in request.form:
-            manufacturer = Manufacturer(name=request.form['name'], customer_id=request.form['customer_id'])
+        if 'name' in request.form:
+            manufacturer = Manufacturer(name=request.form['name'])
             db.session.add(manufacturer)
             db.session.commit()
         return redirect(url_for('manufacturers'))
     manufacturers = Manufacturer.query.all()
-    return render_template('manufacturers.html', manufacturers=manufacturers, customers=Customer.query.all())
+    return render_template('manufacturers.html', manufacturers=manufacturers)
 
 @app.route('/solutions', methods=['GET', 'POST'])
 def solutions():
