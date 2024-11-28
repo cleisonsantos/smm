@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
@@ -121,12 +121,23 @@ def template_sections(template_id):
     #sections = TemplateSection.query.filter_by(template_id=template_id).all()
     #return render_template('template_details.html', template=Template.query.get_or_404(template_id), template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), sections=sections)
 
+@app.route('/templates/<int:template_id>/sections/<int:section_id>', methods=['DELETE'])
+def delete_section(template_id, section_id):
+    section = TemplateSection.query.get_or_404(section_id)
+    db.session.delete(section)
+    db.session.commit()
+    # Retorna o cabeçalho HX-Redirect para redirecionar para 'template_details'
+    response = jsonify(message="Seção excluída")
+    response.headers['HX-Redirect'] = url_for('template_details', template_id=template_id)
+    return response
+    #return redirect(url_for('template_details', template_id=template_id), code=303)
+
 @app.route('/templates/sections/<int:section_id>/questions', methods=['GET'])
 def section_questions(section_id):
     questions = TemplateQuestion.query.filter_by(section_id=section_id).all()
     return render_template('section_questions.html', section_id=section_id, template_questions=questions)
 
-@app.route('/sections/<int:section_id>/questions', methods=['POST'])
+@app.route('/templates/sections/<int:section_id>/questions', methods=['POST'])
 def questions(section_id):
     if request.method == 'POST':
         # Process the form data and add the question to the database
@@ -145,7 +156,7 @@ def questions(section_id):
             db.session.commit()
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
     
-@app.route('/questions/<int:question_id>', methods=['DELETE'])
+@app.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     question = TemplateQuestion.query.get_or_404(question_id)
     db.session.delete(question)
