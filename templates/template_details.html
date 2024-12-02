@@ -2,19 +2,16 @@
 {% block title %}Cadastro de Clientes{% endblock %}
 
 {% block content %}
-<div class="bg-white rounded-lg shadow p-4">
-    <h2 class="text-lg font-bold">{{ template.name }}</h2>
-    <span class="text-gray-600 text-sm">{{ template.description }}</span>
-    <!-- <form method="POST" action="/templates">
-        <div class="mb-1">
-            <!--<label for="name" class="block text-gray-700">Nome</label>-->
-    <!--<input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2 mb-1"
-                placeholder="Nome do modelo" required>
-            <textarea id="description" name="description" class="w-full border border-gray-300 rounded px-3 py-2"
-                placeholder="Descrição do modelo"></textarea>
-        </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Salvar</button>
-    </form> -->
+<div class="bg-white rounded-lg shadow p-4 flex justify-between items-center gap-2">
+    <div id="template_name_and_description">
+        <h2 class="text-lg font-bold">{{ template.name }}</h2>
+        <span class="text-gray-600 text-sm">{{ template.description }}</span>
+    </div>
+    <div id="template_risk_link">
+        <a href="/templates/{{template.id}}/risks"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Configurar riscos
+        </a>
+    </div>
 </div>
 
 <div class="flex gap-2">

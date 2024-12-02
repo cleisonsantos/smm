@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Riscos do modelo{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow p-4 flex justify-between items-center text-lg">
+    <div id="template_name_and_description">
+        <h2>Riscos do modelo: <strong>{{ template.name }}</strong></h2>
+    </div>
+</div>
+<div class="bg-white rounded-lg shadow p-4 mt-2">
+    <h2>Adicionar riscos:</h2>
+    <div id="template_risk_form">
+        <form action="/templates/{{template.id}}/risks" method="POST">
+            <div class="flex gap-2 items-center mt-2">
+                <textarea class="w-full border border-gray-300 rounded px-3 py-2" rows="1" name="risk_description"
+                    id="risk_description" placeholder="Descrição do risco"></textarea>
+                <select name="template_question_id" id="template_question_id"
+                    class="w-64 border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                    <option value="">Selecione a questão</option>
+                    {% for question in template_questions %}
+                    <option value="{{ question.id }}">{{ question.number }} - {{ question.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <select name="template_response_value" id=""
+                    class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                    <option value="">Selecione a resposta</option>
+                    <option value="YES">Sim</option>
+                    <option value="NO">Não</option>
+                </select>
+                <select name="risk_impact" id=""
+                    class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                    <option value="">Selecione o impacto</option>
+                    <option value="5">5 - Muito Alto</option>
+                    <option value="4">4 - Alto</option>
+                    <option value="3">3 - Médio</option>
+                    <option value="2">2 - Baixo</option>
+                    <option value="1">1 - Muito Baixo</option>
+                </select>
+                <select name="risk_likelihood" id=""
+                    class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                    <option value="">Selecione a probabilidade</option>
+                    <option value="5">81% - 100%</option>
+                    <option value="4">61% - 80%</option>
+                    <option value="3">41% - 60%</option>
+                    <option value="2">21% - 40%</option>
+                    <option value="1">1% - 20%</option>
+                </select>
+            </div>
+            <input type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
+                value="Adicionar">
+        </form>
+    </div>
+</div>
+<div class="bg-white rounded-lg shadow p-4 flex flex-col justify-between mt-2">
+    <h2>Riscos cadastrados:</h2>
+    <div id="risk_list">
+        <table class="w-full table-auto">
+            <thead class="">
+                <tr>
+                    <th>Descrição</th>
+                    <th>Questão</th>
+                    <th>Resposta</th>
+                    <th>Impacto</th>
+                    <th>Probabilidade</th>
+                    <th>Nível</th>
+                    <th>Remover</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for risk in template_risks %}
+                <tr>
+                    <td>{{ risk.risk_description }}</td>
+                    <td>{{ template_questions.filter_by(id=risk.template_question_id).first().title }}</td>
+                    <td>{% if risk.template_response_value == "YES" %}Sim{% else %}Não{% endif %}</td>
+                    <td>{{ risk_impacts[risk.risk_impact - 1] }}</td>
+                    <td>{{ risk_likelihoods[risk.risk_likelihood - 1] }}</td>
+                    <td>{{ risk_levels }}</td>
+                    <td>
+                        <button>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                class="size-4">
+                                <path fill-rule="evenodd"
+                                    d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy import text
+from template_risk import calculate_risk_level
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smm.db'
@@ -9,7 +11,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
 
-from models import Customer, Manufacturer, Solution, Component, Template, TemplateSection, TemplateQuestion
+from models import Customer, Manufacturer, Solution, Component, Template, TemplateSection, TemplateQuestion, TemplateRisk
 
 @app.route('/')
 def home():
@@ -132,6 +134,31 @@ def delete_section(template_id, section_id):
     return response
     #return redirect(url_for('template_details', template_id=template_id), code=303)
 
+@app.route('/templates/<int:template_id>/risks', methods=['GET', 'POST'])
+def template_risks(template_id):
+    if request.method == 'POST':
+        # Process the form data and add the risk to the database
+        if 'template_question_id' and 'template_response_value' and 'risk_impact' and 'risk_likelihood' and 'risk_description' in request.form:
+            template_question_id = request.form['template_question_id']
+            template_response_value = request.form['template_response_value']
+            risk_impact = int(request.form['risk_impact'])
+            risk_likelihood = int(request.form['risk_likelihood'])
+            risk_level = calculate_risk_level(risk_impact, risk_likelihood)
+            risk_description = request.form['risk_description']
+            risk = TemplateRisk(template_id=template_id, template_question_id=template_question_id, template_response_value=template_response_value, risk_impact=risk_impact, risk_likelihood=risk_likelihood, risk_level=risk_level, risk_description=risk_description)
+            db.session.add(risk)
+            db.session.commit()
+            return redirect(url_for('template_risks', template_id=template_id))
+    template = Template.query.get_or_404(template_id)
+    template_sections = TemplateSection.query.filter_by(template_id=template_id).all()
+    template_questions = TemplateQuestion.query.filter(TemplateQuestion.section_id.in_([section.id for section in template_sections])).all()
+    template_risks = TemplateRisk.query.filter(TemplateRisk.template_id==template_id).all()
+    risk_levels = ['Muito Baixo', 'Baixo', 'Médio', 'Alto', 'Muito Alto']
+    risk_likelihoods = ['1% - 20%', '21% - 40%', '41% - 60%', '61% - 80%', '81% - 100%']
+    return render_template('template_risks.html', template=template, template_sections=template_sections, template_questions=template_questions, template_risks=template_risks, risk_levels=risk_levels, risk_likelihoods=risk_likelihoods)
+    #query = text("SELECT * FROM template t JOIN template_section ts ON t.id = ts.template_id JOIN template_question tq ON ts.id = tq.section_id LEFT JOIN template_risk tr ON tq.id = tr.template_question_id WHERE t.id = :id;")
+    #results = db.session.execute(query, {"id": template_id}).all()
+
 @app.route('/templates/sections/<int:section_id>/questions', methods=['GET'])
 def section_questions(section_id):
     questions = TemplateQuestion.query.filter_by(section_id=section_id).all()
@@ -155,7 +182,7 @@ def questions(section_id):
             db.session.add(question)
             db.session.commit()
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
-    
+
 @app.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     question = TemplateQuestion.query.get_or_404(question_id)
