@@ -20,6 +20,7 @@ class TemplateQuestion(db.Model):
     section_id = db.Column(db.Integer, db.ForeignKey('template_section.id', name='fk_section', ondelete='CASCADE'), nullable=False)
     response_type = db.Column(db.String(), nullable=False)
     required = db.Column(db.Boolean, nullable=False)
+    template_section = db.relationship('TemplateSection')
 
 #template_question = db.relationship('TemplateQuestion', backref='template_section')
 
@@ -44,6 +45,7 @@ class TemplateRisk(db.Model):
     risk_likelihood = db.Column(db.Integer, nullable=False)
     risk_level = db.Column(db.String(), nullable=False)
     risk_description = db.Column(db.String(), nullable=False)
+    template_question = db.relationship('TemplateQuestion')
 
 #template_risk = db.relationship('TemplateRisk', backref='template')
 

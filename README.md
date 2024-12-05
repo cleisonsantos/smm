@@ -15,8 +15,8 @@ Este é um projeto Python que utiliza o Flask e o SQLAlchemy para gerenciar mode
 
 1. Crie um ambiente virtual (opcional, mas recomendado):
    ```bash
-    python -m venv venv
-    source venv/bin/activate  # No Windows: venv\Scripts\activate
+    python -m venv .venv
+    source .venv/bin/activate  # No Windows: venv\Scripts\activate
     ```
 
 2. Instale as dependências:

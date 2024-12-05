@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from sqlalchemy import text
 from template_risk import calculate_risk_level
 
 app = Flask(__name__)
@@ -150,12 +149,39 @@ def template_risks(template_id):
             db.session.commit()
             return redirect(url_for('template_risks', template_id=template_id))
     template = Template.query.get_or_404(template_id)
-    template_sections = TemplateSection.query.filter_by(template_id=template_id).all()
-    template_questions = TemplateQuestion.query.filter(TemplateQuestion.section_id.in_([section.id for section in template_sections])).all()
-    template_risks = TemplateRisk.query.filter(TemplateRisk.template_id==template_id).all()
-    risk_levels = ['Muito Baixo', 'Baixo', 'Médio', 'Alto', 'Muito Alto']
+    template_questions = TemplateQuestion.query.join(TemplateSection).filter(TemplateSection.template_id==template_id)
+    template_risks = TemplateRisk.query.join(TemplateQuestion).join(TemplateSection).filter(TemplateRisk.template_id==template_id)
+    print(dir(template_risks[0].template_question))
+    risk_impacts = ['Muito Baixo', 'Baixo', 'Médio', 'Alto', 'Muito Alto']
     risk_likelihoods = ['1% - 20%', '21% - 40%', '41% - 60%', '61% - 80%', '81% - 100%']
-    return render_template('template_risks.html', template=template, template_sections=template_sections, template_questions=template_questions, template_risks=template_risks, risk_levels=risk_levels, risk_likelihoods=risk_likelihoods)
+    risk_levels = [
+        'Muito Baixo',
+        'Muito Baixo',
+        'Muito Baixo',
+        'Muito Baixo',
+        'Muito Baixo',
+        'Baixo',
+        'Baixo',
+        'Baixo',
+        'Baixo',
+        'Baixo',
+        'Médio',
+        'Médio',
+        'Médio',
+        'Médio',
+        'Médio',
+        'Alto',
+        'Alto',
+        'Alto',
+        'Alto',
+        'Alto',
+        'Muito Alto',
+        'Muito Alto',
+        'Muito Alto',
+        'Muito Alto',
+        'Muito Alto'
+    ]
+    return render_template('template_risks.html', template=template, template_questions=template_questions, template_risks=template_risks, risk_levels=risk_levels, risk_likelihoods=risk_likelihoods, risk_impacts=risk_impacts)
     #query = text("SELECT * FROM template t JOIN template_section ts ON t.id = ts.template_id JOIN template_question tq ON ts.id = tq.section_id LEFT JOIN template_risk tr ON tq.id = tr.template_question_id WHERE t.id = :id;")
     #results = db.session.execute(query, {"id": template_id}).all()
 
