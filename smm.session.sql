@@ -46,9 +46,10 @@
 -- DROP TABLE customer_manufacturer;
 -- DROP TABLE template_risk;
 -- DROP TABLE alembic_version;
-SELECT *
-FROM template t
-    JOIN template_section ts ON t.id = ts.template_id
-    JOIN template_question tq ON ts.id = tq.section_id
-    LEFT JOIN template_risk tr ON tq.id = tr.template_question_id
-WHERE t.id = 1;
+-- SELECT *
+-- FROM template t
+--     JOIN template_section ts ON t.id = ts.template_id
+--     JOIN template_question tq ON ts.id = tq.section_id
+--     LEFT JOIN template_risk tr ON tq.id = tr.template_question_id
+-- WHERE t.id = 1;
+describe questionnaire;

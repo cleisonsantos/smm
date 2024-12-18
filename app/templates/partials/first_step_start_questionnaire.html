@@ -1,0 +1,50 @@
+<!-- Etapas -->
+<div id="step-container">
+    <!-- Etapa 1: Seleção do Modelo -->
+    <div id="step-1" class="step active">
+        <h3 class="font-bold mb-4">Seleção do Modelo</h3>
+        <label class="block mb-2 text-gray-700">Buscar modelo:</label>
+        <input
+            type="text"
+            placeholder="Digite para buscar"
+            class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
+        />
+        <form hx-post="{{ url_for('main.handle_step', step=1) }}">
+            <label class="block mb-2 text-gray-700">Selecione o modelo:</label>
+
+            <select
+                name="questionnaire_template"
+                class="w-full p-2 border border-gray-300 rounded mb-4"
+                hx-get="{{ url_for('main.render_template_title') }}"
+                hx-trigger="change"
+                hx-swap="outerHTML"
+                hx-target="#questionnaire_title"
+            >
+                {% if templates %}
+                <option>Selecione um modelo</option>
+                {% for template in templates %}
+                <option value="{{ template.id }}">{{ template.name }}</option>
+                {% endfor %} {% else %}
+                <option class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    Nenhum modelo encontrado
+                </option>
+                {% endif %}
+            </select>
+            <label class="block mb-2 text-gray-700"
+                >Título do questionário:</label
+            >
+            <input
+                id="questionnaire_title"
+                name="questionnaire_title"
+                type="text"
+                value=""
+                class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+                Próxima Etapa
+            </button>
+        </form>
+    </div>
+</div>

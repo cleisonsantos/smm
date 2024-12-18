@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block title %}Iniciar Questionário{% endblock %} {%
+block content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold mb-2">Iniciar Questionário</h2>
+</div>
+    <div class="bg-white rounded-lg shadow p-6 mt-4 grid">
+        <div class="w-full max-w-4xl p-6 justify-self-center">
+            <!-- Stepper -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex-1">
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold"
+                        >
+                            1
+                        </div>
+                        <span class="ml-3 {% if step == 1 %}font-bold {% endif %} text-gray-500"
+                            >Seleção do Modelo</span
+                        >
+                    </div>
+                    <div class="h-1 bg-blue-500 w-full mt-2"></div>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 rounded-full {% if step == 2 %}bg-blue-500 text-white{% endif %} flex items-center justify-center font-bold"
+                        >
+                            2
+                        </div>
+                        <span class="ml-3 {% if step == 2 %}font-bold {% endif %} text-gray-500">Cliente e  Componente</span>
+                    </div>
+                    <div class="h-1 {% if step == 2 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center font-bold"
+                        >
+                            3
+                        </div>
+                        <span class="ml-3 {% if step == 3 %}font-bold {% endif %} text-gray-500">Revisão</span>
+                        <div class="h-1 {% if step == 3 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="steps" hx-get="/questionnaires/start/{{ step }}" hx-trigger="load" hx-swap="innerHTML"></div>
+    </div>
+    {% endblock %}
+</div>

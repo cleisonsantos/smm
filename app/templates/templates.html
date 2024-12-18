@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block title %}Cadastro de Clientes{% endblock %} {%
+block content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold mb-2">Adicionar modelo de questionário:</h2>
+    <form method="POST" action="{{ url_for('main.templates') }}">
+        <div class="mb-1">
+            <!--<label for="name" class="block text-gray-700">Nome</label>-->
+            <input
+                type="text"
+                id="name"
+                name="name"
+                class="w-full border border-gray-300 rounded px-3 py-2 mb-1"
+                placeholder="Nome do modelo"
+                required
+            />
+            <textarea
+                id="description"
+                name="description"
+                class="w-full border border-gray-300 rounded px-3 py-2"
+                placeholder="Descrição do modelo"
+            ></textarea>
+        </div>
+        <button
+            type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center gap-2"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                class="size-4"
+            >
+                <path
+                    d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
+                />
+            </svg>
+            Adicionar
+        </button>
+    </form>
+</div>
+
+<div class="bg-white rounded-lg shadow p-6 mt-6">
+    <h2 class="text-lg font-bold mb-4">Modelos cadastrados:</h2>
+    <ul>
+        {% for template in templates %}
+        <div class="mb-2">
+            <a href="/templates/{{ template.id }}">
+                <li class="py-1">{{ template.name }}</li>
+                <span class="text-gray-600 text-sm"
+                    >{{ template.description }}</span
+                >
+            </a>
+            <hr />
+        </div>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

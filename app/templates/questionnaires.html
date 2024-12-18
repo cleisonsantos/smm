@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block title %}Questionários{% endblock %} {% block
+content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold">Questionários</h2>
+    <a
+        href="/questionnaires/start"
+        class="w-fit bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center gap-2 mt-2"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="size-4"
+        >
+            <path
+                d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z"
+            />
+        </svg>
+        Iniciar Questionário
+    </a>
+</div>
+
+<div class="bg-white rounded-lg shadow p-6 mt-6">
+    <h3 class="text-md font-bold mt-2">Lista de Questionários:</h3>
+    <ul>
+        {% for questionnaire in questionnaires %}
+        <div class="mb-2">
+            <a href="/templates/{{ template.id }}">
+                <li class="py-1">{{ questionnaire.name }}</li>
+                <!-- <span class="text-gray-600 text-sm">{{ questionnaire.description }}</span> -->
+            </a>
+            <hr />
+        </div>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
