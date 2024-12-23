@@ -3,41 +3,33 @@
     <div id="step-2" class="step active">
         <h3 class="font-bold mb-4">Escolha do Cliente e Componente</h3>
         <form hx-post="{{ url_for('main.handle_step', step=2) }}">
-        <label class="block mb-2 text-gray-700">Selecione o Cliente:</label>
-        <select
-            name="customer_id"
-            class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
-        >
-            <option>Selecione</option>
-            {% for customer in customers %}
-            <option value="{{ customer.id }}">{{ customer.name }}</option>
-            {% endfor %}
-        </select>
+            <label class="block mb-2 text-gray-700">Selecione o Cliente:</label>
+            <select name="customer_id"
+                class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500">
+                <option>Selecione</option>
+                {% for customer in customers %}
+                <option value="{{ customer.id }}">{{ customer.name }}</option>
+                {% endfor %}
+            </select>
 
-        <label class="block mb-2 text-gray-700">Selecione o Componente:</label>
-        <select
-            class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
-            name="component_id"
-        >
-            <option>Selecione</option>
-            {% for component in components %}
-            <option value="{{ component.id }}">
-                {{ component.name }} - {{ component.solution.name }}
-            </option>
-            {% endfor %}
-        </select>
+            <label class="block mb-2 text-gray-700">Selecione o Componente:</label>
+            <select class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
+                name="component_id">
+                <option>Selecione</option>
+                {% for component in components %}
+                <option value="{{ component.id }}">
+                    {{ component.name }} - {{ component.solution.name }}
+                </option>
+                {% endfor %}
+            </select>
 
-        <div class="flex justify-between">
-            <button
-                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-            >
-                Voltar
-            </button>
-            <button
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-                Próxima Etapa
-            </button>
-        </div>
+            <div class="flex justify-between">
+                <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                    Voltar
+                </button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Próxima Etapa
+                </button>
+            </div>
     </div>
 </div>

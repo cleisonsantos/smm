@@ -38,7 +38,6 @@ class TemplateSection(db.Model):
     template_id = db.Column(db.Integer, db.ForeignKey('template.id', name='fk_template', ondelete='CASCADE'), nullable=False)
     template = db.relationship('Template', backref='TemplateSection')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
-    #sections = db.relationship('TemplateSection', backref='Template')
 
 class TemplateQuestion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,8 +48,6 @@ class TemplateQuestion(db.Model):
     required = db.Column(db.Boolean, nullable=False)
     template_section = db.relationship('TemplateSection')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
-
-#template_question = db.relationship('TemplateQuestion', backref='template_section')
 
 class TemplateList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -76,13 +73,15 @@ class TemplateRisk(db.Model):
     template_question = db.relationship('TemplateQuestion')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
-#template_risk = db.relationship('TemplateRisk', backref='template')
-
 class Questionnaire(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False)
     template_id = db.Column(db.Integer, db.ForeignKey('template.id', name='fk_template', ondelete='CASCADE'), nullable=False)
     template = db.relationship('Template')
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', name='fk_customer', ondelete='CASCADE'), nullable=False)
+    customer = db.relationship('Customer')
+    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=False)
+    component = db.relationship('Component')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
 class Section(db.Model):
@@ -99,15 +98,11 @@ class Question(db.Model):
     response_type = db.Column(db.String(), nullable=False)
     response = db.Column(db.String(), nullable=True)
     required = db.Column(db.Boolean, nullable=False)
-    risk_impact = db.Column(db.Integer, nullable=False)
-    risk_likelihood = db.Column(db.Integer, nullable=False)
-    risk_level = db.Column(db.String(), nullable=False)
-    risk_description = db.Column(db.String(), nullable=False)
-    questionnaire_section_id = db.Column(db.Integer, db.ForeignKey('section.id', name='fk_section', ondelete='CASCADE'), nullable=False)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', name='fk_customer', ondelete='CASCADE'), nullable=False)
-    customer = db.relationship('Customer')
-    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=False)
-    component = db.relationship('Component')
+    risk_impact = db.Column(db.Integer, nullable=True)
+    risk_likelihood = db.Column(db.Integer, nullable=True)
+    risk_level = db.Column(db.String(), nullable=True)
+    risk_description = db.Column(db.String(), nullable=True)
+    section_id = db.Column(db.Integer, db.ForeignKey('section.id', name='fk_section', ondelete='CASCADE'), nullable=False)
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
 class DraftStartQuestionnaire(db.Model):

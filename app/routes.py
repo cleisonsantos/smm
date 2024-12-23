@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
-from werkzeug.wrappers.response import Response
 from app.template_risk import calculate_risk_level
 from app.validator import ComponentForm
 from app import db
@@ -13,6 +12,7 @@ TemplateQuestion,\
 TemplateRisk,\
 Questionnaire,\
 Section,\
+Question,\
 DraftStartQuestionnaire
 
 main_blueprint = Blueprint('main', __name__)
@@ -225,20 +225,31 @@ def delete_question(question_id):
 
 @main_blueprint.route('/questionnaires', methods=['GET'])
 def questionnaires():
-    return render_template('questionnaires.html')
+    questionnaires = Questionnaire.query.all()
+    return render_template('questionnaires.html', questionnaires=questionnaires)
 
 @main_blueprint.route('/questionnaires/start', methods=['GET', 'POST'])
 def start_questionnaire():
-    if request.method == 'POST':
-        print(request.form);
-        return 'hello'
     draft_start_questionnaire = DraftStartQuestionnaire.query.first()
+    if request.method == 'POST':
+        questionnaire = Questionnaire(title=draft_start_questionnaire.title,template_id=draft_start_questionnaire.template_id,customer_id=draft_start_questionnaire.customer_id,component_id=draft_start_questionnaire.component_id)
+        db.session.add(questionnaire)
+        db.session.commit()
+        sections = TemplateSection.query.filter_by(template_id=questionnaire.template_id).all()
+        for section in sections:
+            questionnaire_section = Section(name=section.name, number=section.number, questionnaire_id=questionnaire.id)
+            db.session.add(questionnaire_section)
+            questions = TemplateQuestion.query.filter_by(section_id=section.id).all()
+            for question in questions:
+                questionnaire_question = Question(title=question.title, number=question.number, response_type=question.response_type, required=question.required, section_id=questionnaire_section.id)
+                db.session.add(questionnaire_question)
+                db.session.commit()
     if draft_start_questionnaire == None:
         return render_template('start_questionnaire.html', step=1)
-    elif draft_start_questionnaire.template_id != None and draft_start_questionnaire.title != None:
-        return render_template('start_questionnaire.html', step=2)
-    elif draft_start_questionnaire.customer_id != None and draft_start_questionnaire.component_id != None:
+    if draft_start_questionnaire.customer_id != None and draft_start_questionnaire.component_id != None:
         return render_template('start_questionnaire.html', step=3)
+    if draft_start_questionnaire.template_id != None and draft_start_questionnaire.title != None:
+        return render_template('start_questionnaire.html', step=2)
     return render_template('start_questionnaire.html', step=1)
 
 @main_blueprint.route('/questionnaires/start/<int:step>', methods=['GET', 'POST'])
@@ -257,6 +268,7 @@ def handle_step(step):
             draft_start_questionnaire = DraftStartQuestionnaire.query.first()
             draft_start_questionnaire.customer_id = customer_id
             draft_start_questionnaire.component_id = component_id
+            db.session.add(draft_start_questionnaire)
             db.session.commit()
             return redirect(url_for('main.handle_step', step=3))
         elif step == 3:
@@ -270,7 +282,7 @@ def handle_step(step):
         components = Component.query.all()
         return render_template('partials/second_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, customers=customers, components=components)
     elif step == 3:
-        return render_template('partials/third_step_start_questionnaire.html')
+        return render_template('partials/third_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire)
     else:
         return render_template('partials/fourth_step_start_questionnaire.html')
 
