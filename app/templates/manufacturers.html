@@ -7,41 +7,26 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-6">
                 Cadastro de Fabricantes
             </h2>
-            <form
-                hx-trigger="submit"
-                hx-post="{{ url_for('main.manufacturers') }}"
-                class="space-y-6"
-            >
+            <form method="POST" action="{{ url_for('main.manufacturers') }}" class="space-y-6">
                 <div class="space-y-4">
                     <div>
-                        <label for="name" class="block text-gray-700"
-                            >Nome do Fabricante</label
-                        >
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            class="w-full border border-gray-300 rounded px-3 py-2"
-                            required
-                        />
+                        <label for="name" class="block text-gray-700">Nome</label>
+                        <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-3 py-2"
+                            required />
                     </div>
                 </div>
 
                 <div class="pt-4">
-                    <button
-                        type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Salvar Fabricante
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Salvar
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div
-        class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden mt-8"
-    >
+    <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden mt-8">
         <div class="px-8 py-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">
                 Fabricantes Cadastrados
@@ -49,13 +34,16 @@
             {% if manufacturers %}
             <ul class="divide-y divide-gray-200">
                 {% for manufacturer in manufacturers %}
-                <li class="py-3">
-                    <a
-                        href="{{ url_for('main.manufacturers', manufacturer_id=manufacturer.id) }}"
-                        class="hover:text-indigo-600 text-gray-800"
-                    >
-                        {{ manufacturer.name }}
-                    </a>
+                <li class="py-4 flex justify-between items-center">
+                    {{ manufacturer.name }}
+                    <button type="submit" class="bg-red-500 text-white p-2 rounded hover:bg-red-600 justify-self-end"
+                        hx-delete="{{ url_for('main.delete_manufacturer', manufacturer_id=manufacturer.id)}}" hx-redirect="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                            <path fill-rule="evenodd"
+                                d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
                 </li>
                 {% endfor %}
             </ul>

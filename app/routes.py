@@ -56,9 +56,20 @@ def manufacturers():
             manufacturer = Manufacturer(name=request.form['name'])
             db.session.add(manufacturer)
             db.session.commit()
-        return redirect(url_for('manufacturers'))
+        return redirect(url_for('main.manufacturers'))
     manufacturers = Manufacturer.query.all()
     return render_template('manufacturers.html', manufacturers=manufacturers)
+
+@main_blueprint.route('/manufacturers/<int:manufacturer_id>', methods=['DELETE'])
+def delete_manufacturer(manufacturer_id):
+    if request.method == 'DELETE':
+        # Process the form data and delete the customer from the database
+        manufacturer = Manufacturer.query.get_or_404(manufacturer_id)
+        db.session.delete(manufacturer)
+        db.session.commit()
+        response = jsonify(message="Fabricante excluído")
+        response.headers['HX-Redirect'] = url_for('main.manufacturers')
+        return response
 
 @main_blueprint.route('/solutions', methods=['GET', 'POST'])
 def solutions():
@@ -68,9 +79,21 @@ def solutions():
             solution = Solution(name=request.form['name'], manufacturer_id=request.form['manufacturer_id'])
             db.session.add(solution)
             db.session.commit()
-        return redirect(url_for('solutions'))
+        return redirect(url_for('main.solutions'))
     solutions = Solution.query.all()
-    return render_template('solutions.html', solutions=solutions, manufacturers=Manufacturer.query.all())
+    manufacturers = Manufacturer.query.all()
+    return render_template('solutions.html', solutions=solutions, manufacturers=manufacturers)
+
+@main_blueprint.route('/solutions/<int:solution_id>', methods=['DELETE'])
+def delete_solution(solution_id):
+    if request.method == 'DELETE':
+        # Process the form data and delete the customer from the database
+        solution = Solution.query.get_or_404(solution_id)
+        db.session.delete(solution)
+        db.session.commit()
+        response = jsonify(message="Solução excluída")
+        response.headers['HX-Redirect'] = url_for('main.solutions')
+        return response
 
 @main_blueprint.route('/components', methods=['GET', 'POST'])
 def components():
@@ -82,7 +105,7 @@ def components():
             component = Component(name=name, solution_id=solution_id)
             db.session.add(component)
             db.session.commit()
-            return redirect(url_for('components'))
+            return redirect(url_for('main.components'))
     components = Component.query.all()
     return render_template('components.html', components=components, solutions=Solution.query.all())
 
@@ -94,7 +117,7 @@ def component_details(component_id):
             component = Component.query.get_or_404(component_id)
             component.name = request.form['name']
             db.session.commit()
-        return redirect(url_for('component_details', component_id=component_id))
+        return redirect(url_for('main.component_details', component_id=component_id))
     component = Component.query.get_or_404(component_id)
     return render_template('component_details.html', component=component)
 
@@ -119,7 +142,7 @@ def template_details(template_id):
             template.name = request.form['name']
             template.description = request.form['description']
             db.session.commit()
-        return redirect(url_for('template_details', template_id=template_id))
+        return redirect(url_for('main.template_details', template_id=template_id))
     template = Template.query.get_or_404(template_id)
     return render_template('template_details.html', template=template, template_sections=TemplateSection.query.filter_by(template_id=template_id).all())
 
@@ -137,7 +160,7 @@ def template_sections(template_id):
             section = TemplateSection(name=request.form['name'], number=section_number, template_id=template_id)
             db.session.add(section)
             db.session.commit()
-        return redirect(url_for('template_details', template_id=template_id))
+        return redirect(url_for('main.template_details', template_id=template_id))
     #sections = TemplateSection.query.filter_by(template_id=template_id).all()
     #return render_template('template_details.html', template=Template.query.get_or_404(template_id), template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), sections=sections)
 
@@ -148,7 +171,7 @@ def delete_section(template_id, section_id):
     db.session.commit()
     # Retorna o cabeçalho HX-Redirect para redirecionar para 'template_details'
     response = jsonify(message="Seção excluída")
-    response.headers['HX-Redirect'] = url_for('template_details', template_id=template_id)
+    response.headers['HX-Redirect'] = url_for('main.template_details', template_id=template_id)
     return response
     #return redirect(url_for('template_details', template_id=template_id), code=303)
 
@@ -166,7 +189,7 @@ def template_risks(template_id):
             risk = TemplateRisk(template_id=template_id, template_question_id=template_question_id, template_response_value=template_response_value, risk_impact=risk_impact, risk_likelihood=risk_likelihood, risk_level=risk_level, risk_description=risk_description)
             db.session.add(risk)
             db.session.commit()
-            return redirect(url_for('template_risks', template_id=template_id))
+            return redirect(url_for('main.template_risks', template_id=template_id))
     template = Template.query.get_or_404(template_id)
     template_questions = TemplateQuestion.query.join(TemplateSection).filter(TemplateSection.template_id==template_id)
     template_risks = TemplateRisk.query.join(TemplateQuestion).join(TemplateSection).filter(TemplateRisk.template_id==template_id)
@@ -283,7 +306,7 @@ def handle_step(step):
             db.session.commit()
             return redirect(url_for('main.handle_step', step=3))
         elif step == 3:
-            return redirect(url_for('questionnaires'))
+            return redirect(url_for('main.questionnaires'))
     draft_start_questionnaire = DraftStartQuestionnaire.query.first()
     if step == 1:
         templates = Template.query.all()
