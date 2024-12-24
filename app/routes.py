@@ -109,6 +109,17 @@ def components():
     components = Component.query.all()
     return render_template('components.html', components=components, solutions=Solution.query.all())
 
+@main_blueprint.route('/components/<int:component_id>', methods=['DELETE'])
+def delete_component(component_id):
+    if request.method == 'DELETE':
+        # Process the form data and delete the customer from the database
+        component = Component.query.get_or_404(component_id)
+        db.session.delete(component)
+        db.session.commit()
+        response = jsonify(message="Componente excluído")
+        response.headers['HX-Redirect'] = url_for('main.components')
+        return response
+
 @main_blueprint.route('/components/<int:component_id>', methods=['GET', 'POST'])
 def component_details(component_id):
     if request.method == 'POST':

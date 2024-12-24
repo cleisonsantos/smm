@@ -47,7 +47,7 @@ block content %}
             {% if solutions %}
             <ul class="divide-y divide-gray-200">
                 {% for solution in solutions %}
-                <li class="py-3 flex justify-between items-center">
+                <li class="py-4 flex justify-between items-center">
                     {{ solution.name }} - {{ solution.manufacturer.name }}
                     <button type="submit" class="bg-red-500 text-white p-2 rounded hover:bg-red-600 justify-self-end"
                         hx-delete="{{ url_for('main.delete_solution', solution_id=solution.id)}}"
