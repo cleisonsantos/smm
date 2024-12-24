@@ -33,9 +33,20 @@ def customers():
             customer = Customer(name=request.form['name'])
             db.session.add(customer)
             db.session.commit()
-        return redirect(url_for('customers'))
+        return redirect(url_for('main.customers'))
     customers = Customer.query.all()
     return render_template('customers.html', customers=customers)
+
+@main_blueprint.route('/customers/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
+    if request.method == 'DELETE':
+        # Process the form data and delete the customer from the database
+        customer = Customer.query.get_or_404(customer_id)
+        db.session.delete(customer)
+        db.session.commit()
+        response = jsonify(message="Cliente excluído")
+        response.headers['HX-Redirect'] = url_for('main.customers')
+        return response
 
 @main_blueprint.route('/manufacturers', methods=['GET', 'POST'])
 def manufacturers():
