@@ -29,7 +29,7 @@
     <div>
       <h3 class="text-md font-bold mb-2">Seções:</h3>
       {% for section in questionnaire.sections %}
-      <div class="mb-2 mt-2 grid grid-cols-2 w-full">
+      <div class="mb-2 mt-2 grid grid-cols-1 w-full py-2">
         <div class="justify-self-start" hx-get="{{ url_for('main.list_questions', section_id=section.id)}}"
           hx-trigger="click" hx-target="#questions">
           {{ section.number }}. {{ section.name }}
