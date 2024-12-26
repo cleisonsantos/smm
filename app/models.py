@@ -83,13 +83,13 @@ class Questionnaire(db.Model):
     component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=False)
     component = db.relationship('Component')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
+    sections = db.relationship('Section', backref='Questionnaire', lazy=True)
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
     number = db.Column(db.Integer, nullable=False)
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id', name='fk_questionnaire', ondelete='CASCADE'), nullable=False)
-    questionnaire = db.relationship('Questionnaire')
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -103,6 +103,7 @@ class Question(db.Model):
     risk_level = db.Column(db.String(), nullable=True)
     risk_description = db.Column(db.String(), nullable=True)
     section_id = db.Column(db.Integer, db.ForeignKey('section.id', name='fk_section', ondelete='CASCADE'), nullable=False)
+    section = db.relationship('Section')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
 class DraftStartQuestionnaire(db.Model):

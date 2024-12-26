@@ -273,6 +273,16 @@ def questionnaires():
     questionnaires = Questionnaire.query.all()
     return render_template('questionnaires.html', questionnaires=questionnaires)
 
+@main_blueprint.route('/questionnaires/<int:questionnaire_id>', methods=['GET'])
+def questionnaire_details(questionnaire_id):
+	questionnaire = Questionnaire.query.get_or_404(questionnaire_id)
+	return render_template('questionnaires_details.html', questionnaire=questionnaire)
+
+@main_blueprint.route('/questionnaires/sections/<int:section_id>/questions', methods=['GET'])
+def list_questions(section_id):
+    questions = Question.query.filter_by(section_id=section_id).all()
+    return render_template('questions.html', questions=questions)
+
 @main_blueprint.route('/questionnaires/start', methods=['GET', 'POST'])
 def start_questionnaire():
     draft_start_questionnaire = DraftStartQuestionnaire.query.first()
@@ -289,6 +299,9 @@ def start_questionnaire():
                 questionnaire_question = Question(title=question.title, number=question.number, response_type=question.response_type, required=question.required, section_id=questionnaire_section.id)
                 db.session.add(questionnaire_question)
                 db.session.commit()
+        db.session.delete(draft_start_questionnaire)
+        db.session.commit()
+        return redirect(url_for('main.questionnaires'))
     if draft_start_questionnaire == None:
         return render_template('start_questionnaire.html', step=1)
     if draft_start_questionnaire.customer_id != None and draft_start_questionnaire.component_id != None:
