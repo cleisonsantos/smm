@@ -203,7 +203,7 @@ def template_risks(template_id):
     template = Template.query.get_or_404(template_id)
     template_questions = TemplateQuestion.query.join(TemplateSection).filter(TemplateSection.template_id==template_id)
     template_risks = TemplateRisk.query.join(TemplateQuestion).join(TemplateSection).filter(TemplateRisk.template_id==template_id)
-    print(dir(template_risks[0].template_question))
+    #print(dir(template_risks[0].template_question))
     risk_impacts = ['Muito Baixo', 'Baixo', 'Médio', 'Alto', 'Muito Alto']
     risk_likelihoods = ['1% - 20%', '21% - 40%', '41% - 60%', '61% - 80%', '81% - 100%']
     risk_levels = [

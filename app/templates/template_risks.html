@@ -46,11 +46,11 @@ block content %}
                     class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate"
                 >
                     <option value="">Selecione o impacto</option>
-                    <option value="5">5 - Muito Alto</option>
-                    <option value="4">4 - Alto</option>
-                    <option value="3">3 - Médio</option>
-                    <option value="2">2 - Baixo</option>
-                    <option value="1">1 - Muito Baixo</option>
+                    <option value="5">5. Muito Alto</option>
+                    <option value="4">4. Alto</option>
+                    <option value="3">3. Médio</option>
+                    <option value="2">2. Baixo</option>
+                    <option value="1">1. Muito Baixo</option>
                 </select>
                 <select
                     name="risk_likelihood"
@@ -58,11 +58,11 @@ block content %}
                     class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate"
                 >
                     <option value="">Selecione a probabilidade</option>
-                    <option value="5">81% - 100%</option>
-                    <option value="4">61% - 80%</option>
-                    <option value="3">41% - 60%</option>
-                    <option value="2">21% - 40%</option>
-                    <option value="1">1% - 20%</option>
+                    <option value="5">5. 81% - 100%</option>
+                    <option value="4">4. 61% - 80%</option>
+                    <option value="3">3. 41% - 60%</option>
+                    <option value="2">2. 21% - 40%</option>
+                    <option value="1">1. 1% - 20%</option>
                 </select>
             </div>
             <input
@@ -109,7 +109,7 @@ block content %}
                     <td>{{ risk_likelihoods[risk.risk_likelihood - 1] }}</td>
                     <td>
                         {{ risk.risk_impact * risk.risk_likelihood }} - {{
-                        risk_levels[risk.risk_impact * risk.risk_likelihood]}}
+                        risk_levels[(risk.risk_impact * risk.risk_likelihood) - 1]}}
                     </td>
                     <td>
                         <button
