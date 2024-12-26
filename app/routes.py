@@ -98,10 +98,9 @@ def delete_solution(solution_id):
 @main_blueprint.route('/components', methods=['GET', 'POST'])
 def components():
     if request.method == 'POST':
-        form = ComponentForm()
-        if form.validate_on_submit():
-            name = form.name.data
-            solution_id = form.solution_id.data
+        if 'name' and 'solution_id' in request.form:
+            name = request.form['name']
+            solution_id = request.form['solution_id']
             component = Component(name=name, solution_id=solution_id)
             db.session.add(component)
             db.session.commit()
@@ -259,6 +258,9 @@ def questions(section_id):
             question = TemplateQuestion(title=request.form['title'], number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
             db.session.add(question)
             db.session.commit()
+            response = jsonify(message="Solução excluída")
+        response.headers['HX-Redirect'] = url_for('main.solutions')
+        return response
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
 
 @main_blueprint.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
@@ -301,7 +303,9 @@ def start_questionnaire():
                 db.session.commit()
         db.session.delete(draft_start_questionnaire)
         db.session.commit()
-        return redirect(url_for('main.questionnaires'))
+        response = jsonify(message="Questionário iniciado!👌")
+        response.headers['HX-Redirect'] = url_for('main.questionnaires')
+        return response
     if draft_start_questionnaire == None:
         return render_template('start_questionnaire.html', step=1)
     if draft_start_questionnaire.customer_id != None and draft_start_questionnaire.component_id != None:
