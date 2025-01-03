@@ -1,7 +1,7 @@
 <div>
     <h3 class="text-md font-bold mb-2">Adicionar Perguntas:</h3>
     <form hx-post="/templates/sections/{{section_id}}/questions" hx-swap="innerHTML" hx-target="#questions">
-        <div class="flex gap-2 items-center">
+        <div class="flex gap- 2 items-center">
             <textarea name="title" id="title" placeholder="Pergunta"
                 class="w-full border border-gray-300 rounded px-3 py-2"></textarea>
             <!-- <label for="response_type">Tipo de resposta:</label> -->
@@ -10,8 +10,16 @@
                 <option value="TEXT">Texto</option>
                 <option value="BOOLEAN">Sim/Não</option>
             </select>
+            <select name="risk_level" id="" class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                <option value="">Selecione o risco</option>
+                <option value="5">5. Muito Alto</option>
+                <option value="4">4. Alto</option>
+                <option value="3">3. Médio</option>
+                <option value="2">2. Baixo</option>
+                <option value="1">1. Muito Baixo</option>
+            </select>
             <label class="inline-flex items-center cursor-pointer">
-                <input type="checkbox" name="required" id="required" class="sr-only peer">
+                <input type="checkbox" name="required" id="required" class="sr-only peer" checked>
                 <div
                     class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                 </div>
@@ -34,6 +42,15 @@
             <select name="response_type" id="response_type" class="w-24 border border-gray-300 rounded px-3 py-2">
                 <option value="TEXT" {% if question.response_type=='TEXT' %} selected {% endif %}>Texto</option>
                 <option value="BOOLEAN" {% if question.response_type=='BOOLEAN' %} selected {% endif %}>Sim/Não</option>
+            </select>
+            <!-- <p>{{ question.risk_level }}</p> -->
+            <select name="risk_level" id="" class="border border-gray-300 rounded px-3 py-2 text-ellipsis truncate">
+                <option value="">Selecione o risco</option>
+                <option value="5" {% if question.risk_level == 5 %} selected {% endif %}>5. Muito Alto</option>
+                <option value="4" {% if question.risk_level == 4 %} selected {% endif %}>4. Alto</option>
+                <option value="3" {% if question.risk_level == 3 %} selected {% endif %}>3. Médio</option>
+                <option value="2" {% if question.risk_level == 2 %} selected {% endif %}>2. Baixo</option>
+                <option value="1" {% if question.risk_level == 1 %} selected {% endif %}>1. Muito Baixo</option>                
             </select>
             <label class="inline-flex items-center flex-col cursor-pointer">
                 <input type="checkbox" name="required" id="required" class="sr-only peer" {% if question.required %}

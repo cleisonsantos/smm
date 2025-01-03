@@ -245,29 +245,32 @@ def section_questions(section_id):
 @main_blueprint.route('/templates/sections/<int:section_id>/questions', methods=['POST'])
 def questions(section_id):
         # Process the form data and add the question to the database
-        if 'title' and 'response_type' and 'required' in request.form:
+        if 'title' in request.form and 'risk_level' in request.form:
+            risk_level = request.form['title']
+        if 'title' in request.form and 'response_type' in request.form:
             last_question_number = TemplateQuestion.query.filter_by(section_id=section_id).order_by(TemplateQuestion.number.desc()).first()
             if last_question_number:
                 question_number = last_question_number.number + 1
             else:
                 question_number = 1
-            if request.form['required'] == 'on':
+
+            # Verifica a presença de 'required' e ajusta
+            required = False
+            if 'required' in request.form and request.form['required'] == 'on':
                 required = True
-            else:
-                required = False
-            question = TemplateQuestion(title=request.form['title'], number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
+
+            question = TemplateQuestion(title=request.form['title'], risk_level=risk_level, number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
             db.session.add(question)
             db.session.commit()
-            response = jsonify(message="Solução excluída")
-        response.headers['HX-Redirect'] = url_for('main.solutions')
-        return response
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
 
 @main_blueprint.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     question = TemplateQuestion.query.get_or_404(question_id)
+    section_id = question.template_section.id
     db.session.delete(question)
     db.session.commit()
+    return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
     return '', 204
 
 @main_blueprint.route('/questionnaires', methods=['GET'])

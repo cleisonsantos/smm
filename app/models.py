@@ -47,6 +47,7 @@ class TemplateQuestion(db.Model):
     response_type = db.Column(db.String(), nullable=False)
     required = db.Column(db.Boolean, nullable=False)
     template_section = db.relationship('TemplateSection')
+    risk_level = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
 class TemplateList(db.Model):
