@@ -157,9 +157,9 @@ def template_details(template_id):
     return render_template('template_details.html', template=template, template_sections=TemplateSection.query.filter_by(template_id=template_id).all())
 
 
-@main_blueprint.route('/templates/<int:template_id>/sections', methods=['POST'])
+@main_blueprint.route('/templates/<int:template_id>/sections', methods=['GET', 'POST'])
 def template_sections(template_id):
-
+    if request.method == 'POST':
         # Process the form data and add the section to the database
         if 'name' in request.form:
             last_section_number = TemplateSection.query.filter_by(template_id=template_id).order_by(TemplateSection.number.desc()).first()
@@ -171,6 +171,10 @@ def template_sections(template_id):
             db.session.add(section)
             db.session.commit()
         return redirect(url_for('main.template_details', template_id=template_id))
+    template_sections = TemplateSection.query.filter_by(template_id=template_id).all()
+    # Variável para armazenar a seção selecionada
+    selected_section_id = request.args.get('selected_section_id', None, type=int)
+    return render_template('partials/template_sections.html', template_sections=template_sections, selected_section_id=selected_section_id)
     #sections = TemplateSection.query.filter_by(template_id=template_id).all()
     #return render_template('template_details.html', template=Template.query.get_or_404(template_id), template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), sections=sections)
 
@@ -242,26 +246,28 @@ def section_questions(section_id):
     questions = TemplateQuestion.query.filter_by(section_id=section_id).all()
     return render_template('section_questions.html', section_id=section_id, template_questions=questions)
 
-@main_blueprint.route('/templates/sections/<int:section_id>/questions', methods=['POST'])
+@main_blueprint.route('/templates/sections/<int:section_id>/questions', methods=['GET', 'POST'])
 def questions(section_id):
-        # Process the form data and add the question to the database
-        if 'title' in request.form and 'risk_level' in request.form:
-            risk_level = request.form['title']
-        if 'title' in request.form and 'response_type' in request.form:
-            last_question_number = TemplateQuestion.query.filter_by(section_id=section_id).order_by(TemplateQuestion.number.desc()).first()
-            if last_question_number:
-                question_number = last_question_number.number + 1
-            else:
-                question_number = 1
+        if request.method == 'POST':
+            # Process the form data and add the question to the database
+            if 'title' in request.form and 'risk_level' in request.form:
+                risk_level = request.form['title']
+            if 'title' in request.form and 'response_type' in request.form:
+                last_question_number = TemplateQuestion.query.filter_by(section_id=section_id).order_by(TemplateQuestion.number.desc()).first()
+                if last_question_number:
+                    question_number = last_question_number.number + 1
+                else:
+                    question_number = 1
 
-            # Verifica a presença de 'required' e ajusta
-            required = False
-            if 'required' in request.form and request.form['required'] == 'on':
-                required = True
+                # Verifica a presença de 'required' e ajusta
+                required = False
+                if 'required' in request.form and request.form['required'] == 'on':
+                    required = True
 
-            question = TemplateQuestion(title=request.form['title'], risk_level=risk_level, number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
-            db.session.add(question)
-            db.session.commit()
+                question = TemplateQuestion(title=request.form['title'], risk_level=risk_level, number=question_number, section_id=section_id, response_type=request.form['response_type'], required=required)
+                db.session.add(question)
+                db.session.commit()
+         
         return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
 
 @main_blueprint.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
