@@ -16,16 +16,22 @@
 
 <div class="flex gap-2">
     <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-64 space-y-6 mt-2">
-        <form action="/templates/{{template.id}}/sections" method="POST">
+        <form action="/templates/{{template.id}}/sections" method="POST" class="flex gap-1 justify-between items-center">
             <div class="">
                 <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-2 py-1"
                     placeholder="Adicionar seção" required>
                 <!-- <input type="hidden" name="template_id" value=""> -->
             </div>
+            <div class="">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
+                        <path
+                            d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                    </svg>
+                </button>
+            </div>
         </form>
-        <div id="sections" hx-trigger="load" hx-swap="innerHTML" hx-get="/templates/{{ template.id }}/sections">
-            
-        </div>
+        <div id="sections" hx-trigger="load" hx-swap="innerHTML" hx-get="/templates/{{ template.id }}/sections"></div>
     </aside>
 
     <div class="bg-white rounded-lg shadow p-4 mt-2 w-full">
