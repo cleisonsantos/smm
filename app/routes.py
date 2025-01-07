@@ -105,6 +105,8 @@ def components():
             db.session.add(component)
             db.session.commit()
             return redirect(url_for('main.components'))
+    args = request.args
+    name = args.get('name', default='', type=str)
     components = Component.query.all()
     return render_template('components.html', components=components, solutions=Solution.query.all())
 
@@ -154,7 +156,7 @@ def template_details(template_id):
             db.session.commit()
         return redirect(url_for('main.template_details', template_id=template_id))
     template = Template.query.get_or_404(template_id)
-    return render_template('template_details.html', template=template, template_sections=TemplateSection.query.filter_by(template_id=template_id).all())
+    return render_template('template_details.html', template=template, template_sections=TemplateSection.query.filter_by(template_id=template_id).all(), components=Component.query.all())
 
 
 @main_blueprint.route('/templates/<int:template_id>/sections', methods=['GET', 'POST'])

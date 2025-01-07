@@ -16,7 +16,8 @@
 
 <div class="flex gap-2">
     <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-64 space-y-6 mt-2">
-        <form action="/templates/{{template.id}}/sections" method="POST" class="flex gap-1 justify-between items-center">
+        <form action="/templates/{{template.id}}/sections" method="POST"
+            class="flex gap-1 justify-between items-center">
             <div class="">
                 <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded px-2 py-1"
                     placeholder="Adicionar seção" required>
@@ -35,6 +36,28 @@
     </aside>
 
     <div class="bg-white rounded-lg shadow p-4 mt-2 w-full">
+        <details open>
+            <summary class="text-md font-bold mb-2">Relacionar componente</summary>
+            <div id="components" class="ml-4">
+                <form action="" method="post">
+                    <label class="block mb-2 text-gray-700">Buscar Componente:</label>
+                    <input type="text" placeholder="Digite para buscar"
+                        class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
+
+                    <label class="block mb-2 text-gray-700">Selecione o Componente:</label>
+                    <select
+                        class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500"
+                        name="component_id">
+                        <option>Selecione</option>
+                        {% for component in components %}
+                        <option value="{{ component.id }}">
+                            {{ component.name }} - {{ component.solution.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </details>
         <div id="questions" hx-trigger="load" hx-swap="innerHTML" hx-target="#questions"
             hx-get="/templates/sections/{% if template_sections|length > 0 %}{{ template_sections[0].id }}{% endif %}/questions">
         </div>
