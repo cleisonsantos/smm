@@ -243,7 +243,18 @@ def template_risks(template_id):
     #query = text("SELECT * FROM template t JOIN template_section ts ON t.id = ts.template_id JOIN template_question tq ON ts.id = tq.section_id LEFT JOIN template_risk tr ON tq.id = tr.template_question_id WHERE t.id = :id;")
     #results = db.session.execute(query, {"id": template_id}).all()
 
-@main_blueprint.route('/templates/sections/<int:section_id>/questions', methods=['GET'])
+@main_blueprint.route('/filter-components', methods=['GET'])
+def filter_components():
+    search_term = request.args.get('search', '').lower()
+
+    # Filtra os componentes pelo nome
+    filtered_components = Component.query.filter(
+        Component.name.ilike(f"%{search_term}%")
+    ).all()
+
+    # Renderiza o partial com os componentes filtrados
+    return render_template('partials/_component_options.html', components=filtered_components)
+
 def section_questions(section_id):
     questions = TemplateQuestion.query.filter_by(section_id=section_id).all()
     return render_template('section_questions.html', section_id=section_id, template_questions=questions)
