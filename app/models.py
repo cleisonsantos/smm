@@ -37,6 +37,8 @@ class TemplateSection(db.Model):
     number = db.Column(db.Integer, nullable=False)
     template_id = db.Column(db.Integer, db.ForeignKey('template.id', name='fk_template', ondelete='CASCADE'), nullable=False)
     template = db.relationship('Template', backref='TemplateSection')
+    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=True)
+    component = db.relationship('Component')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
 class TemplateQuestion(db.Model):

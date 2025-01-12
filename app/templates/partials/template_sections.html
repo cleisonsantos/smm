@@ -1,15 +1,14 @@
 <div>
   <h3 class="text-md font-bold mb-2">Seções:</h3>
   {% for section in template_sections %}
-  <div class="mb-2 mt-2 grid grid-cols-4 gap-2 w-full py-2">
-    <a class="col-span-3 px-2 py-1 rounded 
-            {% if section.id == selected_section_id %} bg-blue-200 {% endif %}"
+  <div class="flex justify-between w-full py-2">
+    <button type="button" id="section-button-{{ section.id }}" class="w-full text-left col-span-3 px-2 py-1 rounded {%if loop.first %} bg-blue-200 {% endif %}"
       hx-get="/templates/sections/{{ section.id }}/questions?selected_section_id" hx-trigger="click"
-      hx-target="#questions">
-      {{ section.number }}. {{ section.name }}
-    </a>
+      hx-target="#questions" onclick="toggleSelectedSection('section-button-{{ section.id }}')">
+      {{ section.number }}. {{ section.name }}{% if section.component_id %} (C) {% endif %}
+    </button>
     <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots"
-      class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
+      class="inline-flex items-center p-1 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50"
       type="button" onclick="toggleDropdown('dropdownDots-{{ section.id }}')">
       <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
         <path
@@ -74,4 +73,18 @@
       });
     }
   });
+
+  function toggleSelectedSection(id) {
+    const section_button = document.getElementById(id);
+
+    // Redefinir a cor de fundo de todas as seções
+    document.querySelectorAll("[id^='section-button']").forEach(btn => {
+      if (btn.id !== id) {
+        btn.classList.add('bg-white');
+        btn.classList.remove('bg-blue-200');
+      }
+    });
+    // Alternar a cor de fundo da seção selecionada
+    section_button.classList.toggle('bg-blue-200');
+  }
 </script>

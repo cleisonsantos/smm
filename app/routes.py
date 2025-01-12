@@ -106,7 +106,10 @@ def components():
             db.session.commit()
             return redirect(url_for('main.components'))
     args = request.args
-    name = args.get('name', default='', type=str)
+    if args:
+        search = args.get('search', default='', type=str)
+        components = Component.query.filter(Component.name.ilike(f"%{search}%")).order_by(Component.name).all()
+        return render_template('components/section_component.html', components=components)
     components = Component.query.all()
     return render_template('components.html', components=components, solutions=Solution.query.all())
 
@@ -281,7 +284,18 @@ def questions(section_id):
                 db.session.add(question)
                 db.session.commit()
          
-        return render_template('section_questions.html', section_id=section_id, template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all())
+        return render_template('section_questions.html', template_section=TemplateSection.query.get_or_404(section_id), template_questions=TemplateQuestion.query.filter_by(section_id=section_id).all(), components=Component.query.all())
+
+@main_blueprint.route('/templates/sections/<int:section_id>/components', methods=['POST'])
+def section_components(section_id):
+    if request.method == 'POST':
+        # Process the form data and add the component to the database
+        if 'component_id' in request.form:
+            component_id = request.form['component_id']
+            section = TemplateSection.query.get_or_404(section_id)
+            section.component_id = component_id
+            db.session.commit()
+        return redirect(url_for('main.template_details', template_id=section.template_id))
 
 @main_blueprint.route('/templates/sections/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):

@@ -15,7 +15,7 @@
 </div>
 
 <div class="flex gap-2">
-    <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-64 space-y-6 mt-2">
+    <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-80 space-y-6 mt-2">
         <form action="/templates/{{template.id}}/sections" method="POST"
             class="flex gap-1 justify-between items-center">
             <div class="">
@@ -24,7 +24,7 @@
                 <!-- <input type="hidden" name="template_id" value=""> -->
             </div>
             <div class="">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <button type="submit" class="bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-600">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
                         <path
                             d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
@@ -36,47 +36,21 @@
     </aside>
 
     <div class="bg-white rounded-lg shadow p-4 mt-2 w-full">
-        <div>
-            <label class="block mb-2 text-gray-700">Buscar Componente:</label>
-            <input 
-                type="text" 
-                placeholder="Digite para buscar"
-                class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" 
-                name="search" 
-                hx-get="/filter-components"
-                hx-target="#component-select-wrapper"
-                hx-trigger="input changed delay:300ms"
-            />
         
-            <label class="block mb-2 text-gray-700">Selecione o Componente:</label>
-            <div id="component-select-wrapper" hx-swap="outerHTML">
-                <select 
-                    id="component-select"
-                    class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" 
-                    name="component_id">
-                    <option>Selecione</option>
-                    {% for component in components %}
-                    <option value="{{ component.id }}">
-                        {{ component.name }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        
-        <script>
-            document.addEventListener('htmx:afterSwap', function(event) {
-                // Verifica se o swap ocorreu no wrapper do select
-                const wrapper = event.target.closest('#component-select-wrapper');
-                if (wrapper) {
-                    const select = wrapper.querySelector('#component-select');
-                    if (select && select.options.length > 1) {
-                        select.selectedIndex = 1; // Seleciona o primeiro item válido
-                    }
-                }
-            });
-        </script>        
-        
+
+        <!-- <script>
+        //document.addEventListener('htmx:afterSwap', function(event) {
+        // Verifica se o swap ocorreu no wrapper do select
+        //const wrapper = event.target.closest('#component-select-wrapper');
+        //if (wrapper) {
+        //    const select = wrapper.querySelector('#component-select');
+        //   if (select && select.options.length > 1) {
+        //        select.selectedIndex = 1; // Seleciona o primeiro item válido
+        //    }
+        //}
+        //});
+    </script> -->
+
         <div id="questions" hx-trigger="load" hx-swap="innerHTML" hx-target="#questions"
             hx-get="/templates/sections/{% if template_sections|length > 0 %}{{ template_sections[0].id }}{% endif %}/questions">
         </div>
