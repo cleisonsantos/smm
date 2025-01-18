@@ -1,0 +1,80 @@
+{% extends "base.html" %} {% block title %}Iniciar Questionário{% endblock %} {%
+block content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold mb-2">Iniciar Questionário</h2>
+</div>
+<div class="bg-white rounded-lg shadow p-6 mt-4 grid">
+    <div class="w-full max-w-4xl p-6 justify-self-center">
+        <!-- Stepper -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
+                        1
+                    </div>
+                    <span
+                        class="ml-3 {% if step == 1 or step == 2 or step == 3 %}font-bold {% endif %} text-gray-500">Seleção
+                        do Modelo</span>
+                </div>
+                <div class="h-1 bg-blue-500 w-full mt-2"></div>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div
+                        class="w-8 h-8 rounded-full {% if step == 2 or step == 3 %}bg-blue-500 text-white{% endif %} flex items-center justify-center font-bold">
+                        2
+                    </div>
+                    <span class="ml-3 {% if step == 2 or step == 3 %}font-bold {% endif %} text-gray-500">Cliente e
+                        Componente</span>
+                </div>
+                <div class="h-1 {% if step == 2 or step == 3 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div
+                        class="w-8 h-8 rounded-full {% if step == 3 %}bg-blue-500 text-white{% endif %} flex items-center justify-center font-bold">
+                        3
+                    </div>
+                    <span class="ml-3 {% if step == 3 %}font-bold {% endif %} text-gray-500">Revisão</span>
+                </div>
+                <div class="h-1 {% if step == 3 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Etapa 2: Escolha do Cliente e Componente -->
+    <div id="step-container">
+        <div id="step-2" class="step active">
+            <h3 class="font-bold mb-4">Escolha do Cliente e Componente</h3>
+            <form action="{{ url_for('main.handle_step', step=2) }}" method="POST">
+                <label class="block mb-2 text-gray-700">Título do questionário:</label>
+                <input id="questionnaire_title" name="questionnaire_title" type="text"
+                    value="{{ draft_start_questionnaire.title }}"
+                    class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
+                {% if draft_questionnaire_components %}
+                {% for dqc in draft_questionnaire_components %}
+                <div class="flex gap-2 left items-center p-2 mb-2">
+                    <input type="hidden" name="draft_questionnaire_component_{{dqc.id}}" value="{{ dqc.id }}" />
+                    <label for="component_amount" class="block mb-2 text-gray-700">Quantidade do componente
+                        <strong class="uppercase">{{
+                            dqc.component.name }} - {{ dqc.component.solution.name }}</strong>:</label>
+                    <input type="hidden" name="component_id_{{dqc.id}}" value="{{ dqc.component_id }}" />
+                    <input type="number" name="component_amount_{{dqc.id}}" min="1" max="100" value="{{ dqc.component_amount }}"
+                        class="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                        required />
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <div class="flex justify-between">
+                    <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                        Voltar
+                    </button>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Próxima Etapa
+                    </button>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</div>

@@ -1,8 +1,8 @@
-"""relacionamento de seção do modelo com componente.
+"""Aplicando atualizações
 
-Revision ID: 3dd5ae9386bc
-Revises: b8c41a19ebff
-Create Date: 2025-01-08 12:02:44.927443
+Revision ID: ec0f954755ed
+Revises: 
+Create Date: 2025-01-12 19:30:22.023881
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3dd5ae9386bc'
-down_revision = 'b8c41a19ebff'
+revision = 'ec0f954755ed'
+down_revision = None
 branch_labels = None
 depends_on = None
 

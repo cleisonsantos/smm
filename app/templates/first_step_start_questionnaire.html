@@ -1,0 +1,94 @@
+{% extends "base.html" %} {% block title %}Iniciar Questionário{% endblock %} {%
+block content %}
+<div class="bg-white rounded-lg shadow p-4">
+    <h2 class="text-lg font-bold mb-2">Iniciar Questionário</h2>
+</div>
+<div class="bg-white rounded-lg shadow p-6 mt-4 grid">
+    <div class="w-full max-w-4xl p-6 justify-self-center">
+        <!-- Stepper -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
+                        1
+                    </div>
+                    <span
+                        class="ml-3 {% if step == 1 or step == 2 or step == 3 %}font-bold {% endif %} text-gray-500">Seleção
+                        do Modelo</span>
+                </div>
+                <div class="h-1 bg-blue-500 w-full mt-2"></div>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div
+                        class="w-8 h-8 rounded-full {% if step == 2 or step == 3 %}bg-blue-500 text-white{% endif %} flex items-center justify-center font-bold">
+                        2
+                    </div>
+                    <span class="ml-3 {% if step == 2 or step == 3 %}font-bold {% endif %} text-gray-500">Cliente e
+                        Componente</span>
+                </div>
+                <div class="h-1 {% if step == 2 or step == 3 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+            </div>
+            <div class="flex-1">
+                <div class="flex items-center">
+                    <div
+                        class="w-8 h-8 rounded-full {% if step == 3 %}bg-blue-500 text-white{% endif %} flex items-center justify-center font-bold">
+                        3
+                    </div>
+                    <span class="ml-3 {% if step == 3 %}font-bold {% endif %} text-gray-500">Revisão</span>
+                </div>
+                <div class="h-1 {% if step == 3 %}bg-blue-500 w-full{% endif %} mt-2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- <div id="steps" hx-get="/questionnaires/start/{{ step }}" hx-trigger="load" hx-swap="innerHTML"></div> -->
+    <!-- Etapas -->
+    <div id="step-container">
+        <!-- Etapa 1: Seleção do Modelo -->
+        <div id="step-1" class="step active">
+            <h3 class="font-bold mb-4">Modelo do Questionário:</h3>
+            <label class="block mb-2 text-gray-700">Buscar modelo:</label>
+            <input type="text" placeholder="Digite para buscar"
+                class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
+            <form action="{{ url_for('main.handle_step', step=1) }}" method="POST">
+                <label class="block mb-2 text-gray-700">Selecione o modelo:</label>
+
+                <select name="questionnaire_template" class="w-full p-2 border border-gray-300 rounded mb-4">
+                    {% if templates %}
+                    <option>Selecione um modelo</option>
+                    {% for template in templates %}
+                    <option value="{{ template.id }}" {% if template.id == draft_start_questionnaire.template_id %}selected{% endif %}>{{ template.name }}</option>
+                    {% endfor %} {% else %}
+                    <option class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Nenhum modelo encontrado
+
+                    </option>
+                    {% endif %}
+                </select>
+
+                <h3 class="font-bold mb-4">Cliente:</h3>
+                <label class="block mb-2 text-gray-700">Buscar cliente:</label>
+                <input type="text" placeholder="Digite para buscar"
+                    class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500" />
+                <label class="block mb-2 text-gray-700">Selecione o cliente:</label>
+
+                <select name="questionnaire_customer" class="w-full p-2 border border-gray-300 rounded mb-4">
+                    {% if customers %}
+                    <option>Selecione um Cliente</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer.id }}" {% if customer.id == draft_start_questionnaire.customer_id %}selected{% endif %}>{{ customer.name }}</option>
+                    {% endfor %} {% else %}
+                    <option class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        Nenhum modelo encontrado
+                    </option>
+                    {% endif %}
+                </select>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Próxima Etapa
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+</div>

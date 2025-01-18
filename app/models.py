@@ -93,7 +93,9 @@ class Section(db.Model):
     name = db.Column(db.String(), nullable=False)
     number = db.Column(db.Integer, nullable=False)
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id', name='fk_questionnaire', ondelete='CASCADE'), nullable=False)
-
+    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=True)
+    component = db.relationship('Component')
+    
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text(), nullable=False)
@@ -116,7 +118,14 @@ class DraftStartQuestionnaire(db.Model):
     template = db.relationship('Template')
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', name='fk_customer', ondelete='CASCADE'), nullable=True)
     customer = db.relationship('Customer')
-    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=True)
-    component = db.relationship('Component')
     updated_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
+    created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
+
+class DraftQuestionnaireComponent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=False)
+    component = db.relationship('Component')
+    component_amount = db.Column(db.Integer, nullable=True)
+    draft_start_questionnaire_id = db.Column(db.Integer, db.ForeignKey('draft_start_questionnaire.id', name='fk_draft_start_questionnaire', ondelete='CASCADE'), nullable=False)
+    draft_start_questionnaire = db.relationship('DraftStartQuestionnaire')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)

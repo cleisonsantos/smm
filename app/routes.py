@@ -13,7 +13,8 @@ TemplateRisk,\
 Questionnaire,\
 Section,\
 Question,\
-DraftStartQuestionnaire
+DraftStartQuestionnaire,\
+DraftQuestionnaireComponent
 
 main_blueprint = Blueprint('main', __name__)
 
@@ -343,9 +344,9 @@ def start_questionnaire():
         response.headers['HX-Redirect'] = url_for('main.questionnaires')
         return response
     if draft_start_questionnaire == None:
-        return render_template('start_questionnaire.html', step=1)
-    if draft_start_questionnaire.customer_id != None and draft_start_questionnaire.component_id != None:
-        return render_template('start_questionnaire.html', step=3)
+        return redirect(url_for('main.handle_step', step=1))
+    if draft_start_questionnaire.title != None and draft_start_questionnaire.template_id != None and draft_start_questionnaire.customer_id != None:
+        return redirect(url_for('main.handle_step', step=2))
     if draft_start_questionnaire.template_id != None and draft_start_questionnaire.title != None:
         return render_template('start_questionnaire.html', step=2)
     return render_template('start_questionnaire.html', step=1)
@@ -354,33 +355,61 @@ def start_questionnaire():
 def handle_step(step):
     if request.method == 'POST':
         if step == 1:
-            template_id = request.form['questionnaire_template']
-            title = request.form['questionnaire_title']
-            draft_start_questionnaire = DraftStartQuestionnaire(template_id=template_id, title=title)
-            db.session.add(draft_start_questionnaire)
-            db.session.commit()
-            return redirect(url_for('main.handle_step', step=2))
+            if 'questionnaire_template' and 'questionnaire_customer' in request.form:
+                template_id = request.form['questionnaire_template']
+                template = Template.query.filter_by(id=template_id).first()
+                customer_id = request.form['questionnaire_customer']
+                customer = Customer.query.filter_by(id=customer_id).first()
+                title = template.name + " - " + customer.name
+                draft_start_questionnaire = DraftStartQuestionnaire.query.first()
+                if draft_start_questionnaire:
+                    draft_start_questionnaire.title = title
+                    draft_start_questionnaire.template_id = template_id
+                    draft_start_questionnaire.customer_id = customer_id
+                    db.session.commit()
+                    return redirect(url_for('main.handle_step', step=2))
+                draft_start_questionnaire = DraftStartQuestionnaire(title=title, template_id=template_id, customer_id=customer_id)
+                db.session.add(draft_start_questionnaire)
+                db.session.commit()
+                return redirect(url_for('main.handle_step', step=2))
         elif step == 2:
-            customer_id = request.form['customer_id']
-            component_id = request.form['component_id']
-            draft_start_questionnaire = DraftStartQuestionnaire.query.first()
-            draft_start_questionnaire.customer_id = customer_id
-            draft_start_questionnaire.component_id = component_id
-            db.session.add(draft_start_questionnaire)
-            db.session.commit()
+            if 'questionnaire_title' in request.form:
+                title = request.form['questionnaire_title']
+                draft_start_questionnaire = DraftStartQuestionnaire.query.first()
+                draft_start_questionnaire.title = title
+                db.session.commit()
+            draft_questionnaire_components = DraftQuestionnaireComponent.query.all()
+            for dqc in draft_questionnaire_components:
+                if request.form['component_id_{}'.format(dqc.id)] and request.form['component_amount_{}'.format(dqc.id)]:
+                    component_id = request.form['component_id_{}'.format(dqc.id)]
+                    component_amount = request.form['component_amount_{}'.format(dqc.id)]
+                    dqc.component_id = component_id
+                    dqc.component_amount = component_amount
+                    db.session.commit()
             return redirect(url_for('main.handle_step', step=3))
         elif step == 3:
             return redirect(url_for('main.questionnaires'))
     draft_start_questionnaire = DraftStartQuestionnaire.query.first()
     if step == 1:
         templates = Template.query.all()
-        return render_template('partials/first_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, templates=templates)
-    elif step == 2:
         customers = Customer.query.all()
+        return render_template('first_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, templates=templates, customers=customers)
+    elif step == 2:
+        template = Template.query.filter_by(id=draft_start_questionnaire.template_id).first()
+        sections = TemplateSection.query.filter_by(template_id=template.id).all()
+        for section in sections:
+            if section.component_id:
+                draft_questionnaire_component = DraftQuestionnaireComponent.query.filter_by(component_id=section.component_id).first()
+                if not draft_questionnaire_component:
+                    draft_questionnaire_component = DraftQuestionnaireComponent(component_id=section.component_id, component_amount=1, draft_start_questionnaire_id=draft_start_questionnaire.id)
+                    db.session.add(draft_questionnaire_component)
+                    db.session.commit()
+        draft_questionnaire_components = DraftQuestionnaireComponent.query.filter_by(draft_start_questionnaire_id=draft_start_questionnaire.id).all()
         components = Component.query.all()
-        return render_template('partials/second_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, customers=customers, components=components)
+        return render_template('second_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, draft_questionnaire_components=draft_questionnaire_components, components=components)
     elif step == 3:
-        return render_template('partials/third_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire)
+        draft_questionnaire_components = DraftQuestionnaireComponent.query.filter_by(draft_start_questionnaire_id=draft_start_questionnaire.id).all()
+        return render_template('third_step_start_questionnaire.html', draft_start_questionnaire=draft_start_questionnaire, draft_questionnaire_components=draft_questionnaire_components)
     else:
         return render_template('partials/fourth_step_start_questionnaire.html')
 
@@ -394,3 +423,14 @@ def render_template_title():
     else:
         return render_template('components/template_title.html')
     #return Response("Erro", status=404)
+
+@main_blueprint.route('/questionnaires/draft/component/<int:id>', methods=['PATCH'])
+def update_draft_questionnaire_component(id):
+    draft_questionnaire_component = DraftQuestionnaireComponent.query.get_or_404(id)
+    if 'component_amount' in request.args:
+        component_amount = request.args.get('component_amount')
+        draft_questionnaire_component.component_amount = component_amount
+        db.session.commit()
+        return jsonify(message="Componente atualizado")
+    else:
+        return jsonify(message="Erro")
