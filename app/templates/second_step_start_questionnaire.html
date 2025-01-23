@@ -66,9 +66,9 @@ block content %}
                 {% endif %}
 
                 <div class="flex justify-between">
-                    <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                    <a href="{{ url_for('main.handle_step', step=step-1) }}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
                         Voltar
-                    </button>
+                    </a>
                     <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                         Próxima Etapa
                     </button>

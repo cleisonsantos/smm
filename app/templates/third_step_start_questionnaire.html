@@ -68,17 +68,17 @@ block content %}
                             ({{ dqc.component_amount }})
                             {% endif %}
                         </li>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             </ul>
 
             <div class="flex justify-between">
-                <button hx-get="/questionnaires/start/2"
+                <a href="{{ url_for('main.handle_step', step=step-1) }}"
                     class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
                     Voltar
-                </button>
+                </a>
                 <button hx-post="/questionnaires/start" hx-redirect="true"
                     class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-4">
