@@ -83,10 +83,8 @@ class Questionnaire(db.Model):
     template = db.relationship('Template')
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', name='fk_customer', ondelete='CASCADE'), nullable=False)
     customer = db.relationship('Customer')
-    component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=False)
-    component = db.relationship('Component')
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
-    sections = db.relationship('Section', backref='Questionnaire', lazy=True)
+    sections = db.relationship('Section', backref='Questionnaire', lazy=True, cascade="all, delete-orphan")
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -95,6 +93,7 @@ class Section(db.Model):
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id', name='fk_questionnaire', ondelete='CASCADE'), nullable=False)
     component_id = db.Column(db.Integer, db.ForeignKey('component.id', name='fk_component', ondelete='CASCADE'), nullable=True)
     component = db.relationship('Component')
+    questions = db.relationship('Question', backref='Section', lazy=True, cascade="all, delete-orphan")
     
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
