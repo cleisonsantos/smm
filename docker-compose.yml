@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask-app
+    ports:
+      - "5000:5000"  # Porta externa : Porta interna
+    environment:
+      - FLASK_APP=app.py  # Nome do arquivo principal do Flask
+      - FLASK_RUN_PORT=5000
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=development
+    volumes:
+      - .:/app  # Montar o diretório local no contêiner para desenvolvimento

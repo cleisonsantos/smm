@@ -55,3 +55,76 @@ Este é um projeto Python que utiliza o Flask e o SQLAlchemy para gerenciar mode
 2. Acesse o projeto no navegador:
 
     http://127.0.0.1:5000/
+
+---
+
+## Executando com Docker/Podman
+
+### Requisitos
+- Docker ou Podman instalado na máquina.
+
+### Passo a Passo
+
+1. **Crie a imagem Docker**
+
+   Para Docker:
+   ```bash
+   docker-compose build
+   ```
+
+   Para Podman:
+   ```bash
+   podman-compose build
+   ```
+
+2. **Suba os contêineres**
+
+   Para Docker:
+   ```bash
+   docker-compose up
+   ```
+
+   Para Podman:
+   ```bash
+   podman-compose up
+   ```
+
+3. **Acesse o projeto**
+
+   Após os contêineres estarem rodando, acesse no navegador:
+   ```
+   http://localhost:5000
+   ```
+
+4. **Executar migrações no SQLite**
+
+   Após subir os contêineres, entre no terminal do contêiner Flask para executar as migrações:
+
+   Para Docker:
+   ```bash
+   docker exec -it flask-app bash
+   ```
+
+   Para Podman:
+   ```bash
+   podman exec -it flask-app bash
+   ```
+
+   Dentro do contêiner, execute:
+   ```bash
+   flask db upgrade
+   ```
+
+5. **Parar os contêineres**
+
+   Para Docker:
+   ```bash
+   docker-compose down
+   ```
+
+   Para Podman:
+   ```bash
+   podman-compose down
+   ```
+
+---
