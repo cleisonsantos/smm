@@ -1,43 +1,48 @@
 <div class="overflow-y-auto max-h-96 flex-wrap gap-4">
 
-    {% for question in questions %}
-    <div class="grid grid-row gap-4">
-        <div>
-            <span
-                class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-                Q{{ question.section.number }}.{{ question.number }}
-            </span>
-            {% if question.required == True %}
-            <span
-                class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                Obrigatória
-            </span>
-            {% endif %}
-        </div>
-        <div>
-            <p>{{ question.title }}</p>
-        </div>
-        <div>
-            {% if question.response_type == 'BOOLEAN' %}
-            <form>
-                <div class="flex items-center mb-2">
-                    <input id="response_yes" type="radio" value="yes" name="response"
-                        class="p-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="response_yes" class="ms-2 font-medium">Sim</label>
-                </div>
-                <div class="flex items-center">
-                    <input id="response_no" type="radio" value="no" name="response"
-                        class="p-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="response_no" class="ms-2 font-medium">Não</label>
-                </div>
-            </form>
-            {% elif question.response_type == 'TEXT' %}
-            <form>
-                <textarea name="response" id="response"
-                    class=" p-2 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
-            </form>
-            {% endif %}
-        </div>
+  {% for question in questions %}
+  <div class="grid grid-row gap-4">
+    <div>
+      <span
+        class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+        Q{{ question.section.number }}.{{ question.number }}
+      </span>
+      {% if question.required == True %}
+      <span
+        class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+        Obrigatória
+      </span>
+      {% endif %}
     </div>
-    {% endfor %}
+    <div>
+      <p>{{ question.title }}</p>
+    </div>
+    <div>
+      {% if question.response_type == 'BOOLEAN' %}
+      <form hx-post="{{ url_for('main.answer_question', question_id=question.id) }}" hx-trigger="change"
+        hx-target="#notification" hx-swap="innerHTML">
+        <div class="flex items-center mb-2">
+          <input id="response_yes" type="radio" value="yes" name="response" {% if question.response=="yes" %} checked {%
+            endif %}
+            class="p-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="response_yes" class="ms-2 font-medium">Sim</label>
+        </div>
+        <div class="flex items-center">
+          <input id="response_no" type="radio" value="no" name="response" {% if question.response=="no" %} checked {%
+            endif %}
+            class="p-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          <label for="response_no" class="ms-2 font-medium">Não</label>
+        </div>
+      </form hx-post="{{ url_for('main.answer_question', question_id=question.id) }}" hx-trigger="change"
+      hx-target="#notification" hx-swap="innerHTML">
+      {% elif question.response_type == 'TEXT' %}
+      <form>
+        <textarea name="response" id="response"
+          class=" p-2 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+      </form>
+      {% endif %}
+    </div>
+    <div id="notification" class=""></div>
+  </div>
+  {% endfor %}
 </div>

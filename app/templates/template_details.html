@@ -32,7 +32,7 @@
                 </button>
             </div>
         </form>
-        <div id="sections" hx-trigger="load" hx-swap="innerHTML" hx-get="/templates/{{ template.id }}/sections"></div>
+        <div id="sections" hx-trigger="load" hx-swap="innerHTML" hx-get="{{ url_for('main.template_sections', template_id=template.id) }}"></div>
     </aside>
 
     <div class="bg-white rounded-lg shadow p-4 mt-2 w-full">

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from app.template_risk import calculate_risk_level
+
 # from app.validator import ComponentForm
 from app import db
 from app.models import (
@@ -448,6 +449,7 @@ def questionnaire_details(questionnaire_id):
     questionnaire = Questionnaire.query.get_or_404(questionnaire_id)
     return render_template("questionnaires_details.html", questionnaire=questionnaire)
 
+
 @main_blueprint.route("/questionnaires/<int:questionnaire_id>", methods=["DELETE"])
 def delete_questionnaire(questionnaire_id):
     if request.method == "DELETE":
@@ -460,11 +462,37 @@ def delete_questionnaire(questionnaire_id):
 
 
 @main_blueprint.route(
+    "/questionnaires/<int:questionnaire_id>/sections", methods=["GET"]
+)
+def sections(questionnaire_id):
+    sections = Section.query.filter_by(questionnaire_id=questionnaire_id).all()
+    # Variável para armazenar a seção selecionada
+    selected_section_id = request.args.get("selected_section_id", None, type=int)
+    return render_template(
+        "partials/sections.html",
+        sections=sections,
+        selected_section_id=selected_section_id,
+    )
+
+
+@main_blueprint.route(
     "/questionnaires/sections/<int:section_id>/questions", methods=["GET"]
 )
 def list_questions(section_id):
     questions = Question.query.filter_by(section_id=section_id).all()
     return render_template("questions.html", questions=questions)
+
+
+@main_blueprint.route("/questions/<int:question_id>/answer", methods=["POST"])
+def answer_question(question_id):
+    if request.method == "POST":
+        answer = request.form["response"]
+        question = Question.query.get_or_404(question_id)
+        question.response = answer
+        db.session.commit()
+        return render_template(
+            "components/success_message.html", message="Resposta salva com sucesso!✍️"
+        )
 
 
 @main_blueprint.route("/questionnaires/start", methods=["GET", "POST"])
@@ -475,7 +503,6 @@ def start_questionnaire():
             title=draft_start_questionnaire.title,
             template_id=draft_start_questionnaire.template_id,
             customer_id=draft_start_questionnaire.customer_id,
-            component_id=draft_start_questionnaire.component_id,
         )
         db.session.add(questionnaire)
         db.session.commit()
