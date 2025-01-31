@@ -366,7 +366,7 @@ def questions(section_id):
     if request.method == "POST":
         # Process the form data and add the question to the database
         if "title" in request.form and "risk_level" in request.form:
-            risk_level = request.form["title"]
+            risk_level = request.form["risk_level"]
         if "title" in request.form and "response_type" in request.form:
             last_question_number = (
                 TemplateQuestion.query.filter_by(section_id=section_id)
@@ -425,17 +425,17 @@ def section_components(section_id):
 )
 def delete_question(question_id):
     question = TemplateQuestion.query.get_or_404(question_id)
-    section_id = question.template_section.id
+    section_id = question.section_id
     db.session.delete(question)
     db.session.commit()
     return render_template(
         "section_questions.html",
-        section_id=section_id,
+        template_section=TemplateSection.query.get_or_404(section_id),
         template_questions=TemplateQuestion.query.filter_by(
             section_id=section_id
         ).all(),
+        components=Component.query.all(),
     )
-    return "", 204
 
 
 @main_blueprint.route("/questionnaires", methods=["GET"])
@@ -495,6 +495,12 @@ def answer_question(question_id):
         )
 
 
+@main_blueprint.route("/question/<int:question_id>/risk_level", methods=["GET"])
+def question_risk_level(question_id):
+    question = Question.query.get_or_404(question_id)
+    return render_template("components/risk_level.html", question=question)
+
+
 @main_blueprint.route("/questionnaires/start", methods=["GET", "POST"])
 def start_questionnaire():
     draft_start_questionnaire = DraftStartQuestionnaire.query.first()
@@ -523,6 +529,7 @@ def start_questionnaire():
                     number=question.number,
                     response_type=question.response_type,
                     required=question.required,
+                    risk_level=question.risk_level,
                     section_id=questionnaire_section.id,
                 )
                 db.session.add(questionnaire_question)

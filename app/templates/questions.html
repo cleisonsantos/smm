@@ -34,7 +34,7 @@
           <label for="response_no" class="ms-2 font-medium">Não</label>
         </div>
       </form hx-post="{{ url_for('main.answer_question', question_id=question.id) }}" hx-trigger="change"
-      hx-target="#notification" hx-swap="innerHTML">
+        hx-target="#notification" hx-swap="innerHTML">
       {% elif question.response_type == 'TEXT' %}
       <form>
         <textarea name="response" id="response"
@@ -43,6 +43,8 @@
       {% endif %}
     </div>
     <div id="notification" class=""></div>
+    <div id="risk_level" class="" hx-get="{{ url_for('main.question_risk_level', question_id=question.id) }}"
+      hx-trigger="load" hx-swap="innerHTML" hx-target="#risk_level"></div>
   </div>
   {% endfor %}
 </div>

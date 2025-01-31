@@ -169,7 +169,7 @@ class Question(db.Model):
     required = db.Column(db.Boolean, nullable=False)
     risk_impact = db.Column(db.Integer, nullable=True)
     risk_likelihood = db.Column(db.Integer, nullable=True)
-    risk_level = db.Column(db.String(), nullable=True)
+    risk_level = db.Column(db.Integer, nullable=True)
     risk_description = db.Column(db.String(), nullable=True)
     section_id = db.Column(
         db.Integer,
