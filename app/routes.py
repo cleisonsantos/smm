@@ -438,6 +438,29 @@ def delete_question(question_id):
     )
 
 
+@main_blueprint.route(
+    "/templates/sections/questions/<int:question_id>", methods=["PUT"]
+)
+def edit_question(question_id):
+    question = TemplateQuestion.query.get_or_404(question_id)
+    if "title" in request.form:
+        title = request.form["title"]
+        question.title = title
+    if "response_type" in request.form:
+        response_type = request.form["response_type"]
+        question.response_type = response_type
+    if "risk_level" in request.form:
+        risk_level = request.form["risk_level"]
+        question.risk_level = risk_level
+    if "required" in request.form:
+        required = True if request.form["required"] == "on" else False
+        question.required = required
+    db.session.commit()
+    return render_template(
+        "components/success_message.html", message="Questão alterada com sucesso!📝"
+    )
+
+
 @main_blueprint.route("/questionnaires", methods=["GET"])
 def questionnaires():
     questionnaires = Questionnaire.query.all()

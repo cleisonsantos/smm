@@ -63,7 +63,7 @@
 
     {% for question in template_questions %}
     <div class="mb-2">
-        <form class="flex gap-2 ">
+        <form class="flex gap-2" hx-put="{{ url_for('main.edit_question', question_id=question.id)}}" hx-trigger="change" hx-target="#notification" hx-swap="innerHTML">
             <input type="number" name="number" id="number" class="w-20 border border-gray-300 rounded px-3 py-2"
                 value="{{ question.number }}">
             <textarea name="title" id="title"
@@ -101,5 +101,6 @@
             </button>
         </form>
     </div>
+    <div id="notification" class=""></div>
     {% endfor %}
 </div>
