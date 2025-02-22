@@ -17,7 +17,7 @@
                         {% for component in components %}
                         <option value="{{ component.id }}" {% if component.id==template_section.component_id %} selected
                             {% endif %}>
-                            {{ component.name }}
+                            {{ component.name }} - {{ component.solution.name }}
                         </option>
                         {% endfor %}
                     </select>
