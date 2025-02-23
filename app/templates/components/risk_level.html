@@ -1,4 +1,4 @@
-{% if question.response_type == 'BOOLEAN' and question.response == 'no' %}
+{% if question.risk_level != None and question.response_type == 'BOOLEAN' and question.response == 'no' %}
 <div id="risk_level" class="">
     <h4>Nível de risco identificado:</h4>
     {%if question.risk_level == 5 %}
