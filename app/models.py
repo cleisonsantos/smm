@@ -195,6 +195,12 @@ class DraftStartQuestionnaire(db.Model):
         nullable=True,
     )
     customer = db.relationship("Customer")
+    draft_questionnaire_component = db.relationship(
+        "DraftQuestionnaireComponent",
+        backref="DraftStartQuestionnaire",
+        lazy=True,
+        cascade="all, delete-orphan",
+    )
     updated_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
 
@@ -217,5 +223,4 @@ class DraftQuestionnaireComponent(db.Model):
         ),
         nullable=False,
     )
-    draft_start_questionnaire = db.relationship("DraftStartQuestionnaire")
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)

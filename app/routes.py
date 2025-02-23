@@ -1,4 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify
+from flask import (
+    Blueprint,
+    make_response,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+)
 from app.template_risk import calculate_risk_level
 
 # from app.validator import ComponentForm
@@ -513,9 +521,11 @@ def answer_question(question_id):
         question = Question.query.get_or_404(question_id)
         question.response = answer
         db.session.commit()
-        return render_template(
-            "components/success_message.html", message="Resposta salva com sucesso!✍️"
+        res = make_response(
+            render_template("questionnaire/question.html", question=question), 200
         )
+        res.headers["HX-Trigger"] = '{"show-toast": {"message": "Resposta salva com sucesso!", "category": "success"}}'
+        return res
 
 
 @main_blueprint.route("/question/<int:question_id>/risk_level", methods=["GET"])
@@ -539,24 +549,61 @@ def start_questionnaire():
             template_id=questionnaire.template_id
         ).all()
         for section in sections:
-            questionnaire_section = Section(
-                name=section.name,
-                number=section.number,
-                questionnaire_id=questionnaire.id,
-            )
-            db.session.add(questionnaire_section)
-            questions = TemplateQuestion.query.filter_by(section_id=section.id).all()
-            for question in questions:
-                questionnaire_question = Question(
-                    title=question.title,
-                    number=question.number,
-                    response_type=question.response_type,
-                    required=question.required,
-                    risk_level=question.risk_level,
-                    section_id=questionnaire_section.id,
+            if section.component_id is not None:
+                draft_questionnaire_component = (
+                    DraftQuestionnaireComponent.query.filter_by(
+                        component_id=section.component_id
+                    ).first()
                 )
-                db.session.add(questionnaire_question)
-                db.session.commit()
+                if draft_questionnaire_component is not None:
+                    for component in range(
+                        draft_questionnaire_component.component_amount
+                    ):
+                        questionnaire_section = Section(
+                            name=section.name
+                            + " - "
+                            + section.component.name
+                            + " "
+                            + str(component + 1),
+                            number=section.number,
+                            questionnaire_id=questionnaire.id,
+                        )
+                        db.session.add(questionnaire_section)
+                        questions = TemplateQuestion.query.filter_by(
+                            section_id=section.id
+                        ).all()
+                        for question in questions:
+                            questionnaire_question = Question(
+                                title=question.title,
+                                number=question.number,
+                                response_type=question.response_type,
+                                required=question.required,
+                                risk_level=question.risk_level,
+                                section_id=questionnaire_section.id,
+                            )
+                            db.session.add(questionnaire_question)
+                            db.session.commit()
+            else:
+                questionnaire_section = Section(
+                    name=section.name,
+                    number=section.number,
+                    questionnaire_id=questionnaire.id,
+                )
+                db.session.add(questionnaire_section)
+                questions = TemplateQuestion.query.filter_by(
+                    section_id=section.id
+                ).all()
+                for question in questions:
+                    questionnaire_question = Question(
+                        title=question.title,
+                        number=question.number,
+                        response_type=question.response_type,
+                        required=question.required,
+                        risk_level=question.risk_level,
+                        section_id=questionnaire_section.id,
+                    )
+                    db.session.add(questionnaire_question)
+                    db.session.commit()
         db.session.delete(draft_start_questionnaire)
         db.session.commit()
         response = jsonify(message="Questionário iniciado!👌")
