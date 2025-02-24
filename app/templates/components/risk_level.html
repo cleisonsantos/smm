@@ -1,5 +1,5 @@
 {% if question.risk_level != None and question.response_type == 'BOOLEAN' and question.response == 'no' %}
-<div id="risk_level" class="">
+<div id="risk_level" class="pb-2">
     <h4>Nível de risco identificado:</h4>
     {%if question.risk_level == 5 %}
     <span class="bg-red-100 text-red-800 text-xs font-medium me-2 rounded-lg px-2 py-1">Muito Alto</span>
