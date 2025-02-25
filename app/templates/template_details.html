@@ -15,7 +15,8 @@
 </div>
 
 <div class="flex gap-2">
-    <aside id="sections-sidebar" class="bg-white rounded-lg shadow p-4 w-80 space-y-6 mt-2 max-h-[85vh] overflow-y-auto">
+    <aside id="sections-sidebar"
+        class="bg-white rounded-lg shadow p-4 w-80 space-y-6 mt-2 max-h-[90vh] overflow-y-auto">
         <form action="/templates/{{template.id}}/sections" method="POST"
             class="flex gap-1 justify-between items-center">
             <div class="">
@@ -32,13 +33,10 @@
                 </button>
             </div>
         </form>
-        <div id="sections" hx-trigger="load" hx-swap="innerHTML" hx-get="{{ url_for('main.template_sections', template_id=template.id) }}"></div>
+        <div id="sections" hx-trigger="load" hx-swap="innerHTML"
+            hx-get="{{ url_for('main.template_sections', template_id=template.id) }}"></div>
     </aside>
-
-    <div class="bg-white rounded-lg shadow p-4 mt-2 w-full max-h-[85vh] overflow-auto">
-        
-
-        <!-- <script>
+    <!-- <script>
         //document.addEventListener('htmx:afterSwap', function(event) {
         // Verifica se o swap ocorreu no wrapper do select
         //const wrapper = event.target.closest('#component-select-wrapper');
@@ -50,9 +48,10 @@
         //}
         //});
     </script> -->
-
-        <div id="questions" hx-trigger="load" hx-swap="innerHTML" hx-target="#questions"
-            hx-get="/templates/sections/{% if template_sections|length > 0 %}{{ template_sections[0].id }}{% endif %}/questions">
+    <div class="bg-white rounded-lg shadow p-4 mt-2 w-full max-h-[90vh] overflow-auto border-box relative">
+        <div id="questions" hx-trigger="load" hx-swap="innerHTML" hx-target="#questions" {% if template_sections|length>
+            0 %} hx-get="{{ url_for('main.questions',
+            section_id=template_sections[0].id)}}" {% endif %}>
         </div>
     </div>
 </div>

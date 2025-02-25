@@ -33,7 +33,7 @@
       hx-get="{{ url_for('main.sections', questionnaire_id=questionnaire.id) }}"></div>
   </aside>
 
-  <div class="bg-white rounded-lg shadow p-4 mt-2 w-full max-h-[85vh] overflow-auto">
+  <div class="bg-white rounded-lg shadow p-4 mt-2 w-full max-h-[90vh] overflow-auto">
     <div id="questions" hx-trigger="load" hx-swap="innerHTML" hx-target="#questions" {% if
       questionnaire.sections|length> 0 %} hx-get="{{ url_for('main.list_questions',
       section_id=questionnaire.sections[0].id)}}" {% endif %}>

@@ -43,8 +43,8 @@
       </form>
       {% endif %}
     </div>
-    <div id="risk_level" class="pb-2" hx-get="{{ url_for('main.question_risk_level', question_id=question.id) }}"
-      hx-trigger="load" hx-swap="innerHTML" hx-target="#risk_level"></div>
+    <div id="risk_level-{{question.id}}" class="pb-2" hx-get="{{ url_for('main.question_risk_level', question_id=question.id) }}"
+      hx-trigger="load" hx-swap="innerHTML" hx-target="#risk_level-{{question.id}}"></div>
   </div>
   <hr class="m-2">
   {% endfor %}
